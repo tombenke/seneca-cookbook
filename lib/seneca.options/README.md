@@ -1,6 +1,8 @@
 seneca.options
 ==============
 
+## The parameters of the seneca instance
+
 Seneca instances can be configured by the `options` parameter, that is an object.
 find the list of properties of the `options` object, and their default values in the [Internal Defaults section](#internal-defaults) below.
 
@@ -16,6 +18,7 @@ The options can be defined via the following ways
 
 ### Internal defaults
 
+```JavaScript
     defaults: {
         tag: '-',           // Tag this Seneca instance, will be appended to instance identifier.
         idlen: 12,          // Standard length of identifiers for actions.
@@ -92,6 +95,7 @@ The options can be defined via the following ways
 
         legacy: {}          // backwards compatibility settings
     }
+```
 
 ### Load options from default file
 
@@ -102,7 +106,7 @@ TODO
 Seneca options can be loaded from configuration file named `seneca.options.js` that is placed in the current folder.
 This file should be a Node.js module that exports a JSON object.
 
-The `seneca.options.js` file can specify:
+The `[seneca.options.js](seneca.options.js)` file can specify:
 
 - global Seneca options,
 - and options for individual plugins.
@@ -114,6 +118,7 @@ you can use the $suffix convention to specify options particular to a given tagg
   
 Example:
 
+```JavaScript
     // seneca.options.js
     module.exports = {
       zed: {
@@ -125,11 +130,13 @@ Example:
         red:   55,
       }
     }
+```
 
 ## Load options in source code
 
 Example:
 
+```JavaScript
     var Seneca = require('seneca')
 
     var seneca = Seneca({
@@ -138,6 +145,7 @@ Example:
       log: 'silent'
       // Other parameters
     })
+```
 
 ## Define options through environment variables
 
@@ -151,6 +159,7 @@ TODO
 
 Prints out useful hints about the actual configuration of the seneca instance.
 
+```shell
     node empty_app.js --seneca.print.options
 
     Seneca Options (undefined): before plugins
@@ -215,4 +224,5 @@ Prints out useful hints about the actual configuration of the seneca instance.
       status: { interval: 60000, running: false },
       legacy: { logging: false },
       log: {} }
+```
 
