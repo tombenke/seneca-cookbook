@@ -1,0 +1,427 @@
+- kind: add
+  case: ADD
+  id: (iiimdbpefuge)
+  pattern: "cmd:stats,role:seneca"
+  name: action_seneca_stats
+  level: debug
+  when: 1484132632914
+- kind: add
+  case: ADD
+  id: (0ujail8ln1nw)
+  pattern: "cmd:close,role:seneca"
+  name: action_seneca_close
+  level: debug
+  when: 1484132632926
+- kind: add
+  case: ADD
+  id: (31bfsvtc34ke)
+  pattern: "info:fatal,role:seneca"
+  name: action_seneca_fatal
+  level: debug
+  when: 1484132632928
+- kind: add
+  case: ADD
+  id: (z3krxu8wn67x)
+  pattern: "get:options,role:seneca"
+  name: action_options_get
+  level: debug
+  when: 1484132632928
+- kind: add
+  case: ADD
+  id: (gjjo1r7ye6ef)
+  pattern: "role:seneca,stats:true"
+  name: action_seneca_stats
+  level: debug
+  when: 1484132632930
+- kind: add
+  case: ADD
+  id: (27ccsmg7e576)
+  pattern: "cmd:get,role:options"
+  name: action_options_get
+  level: debug
+  when: 1484132632930
+- kind: notice
+  notice: "hello seneca 6yo5ntv2r2va/1484132632884/6244/3.2.2/-"
+  level: info
+  when: 1484132632931
+- kind: notice
+  options: 
+    log: 
+      level: all
+    tag: "-"
+    idlen: 12
+    timeout: 22222
+    default_plugins: 
+      transport: true
+    test: false
+    debug: 
+      fragile: false
+      undead: false
+      print: 
+        options: false
+      act_caller: false
+      short_logs: false
+      callpoint: false
+      deprecation: true
+    strict: 
+      result: true
+      fixedargs: true
+      add: false
+      find: true
+      maxloop: 11
+    actcache: 
+      active: false
+      size: 11111
+    trace: 
+      act: false
+      stack: false
+      unknown: true
+      invalid: false
+    stats: 
+      size: 1024
+      interval: 60000
+      running: false
+    deathdelay: 11111
+    plugin: {}
+    system: 
+      catchall: false
+      close_signals: 
+        SIGHUP: true
+        SIGTERM: true
+        SIGINT: true
+        SIGBREAK: true
+    status: 
+      interval: 60000
+      running: false
+    legacy: 
+      logging: false
+  level: debug
+  when: 1484132632932
+- kind: add
+  case: ADD
+  id: (t5n7fd23sbl3)
+  pattern: "name:transport,plugin:define,role:seneca,seq:1,tag:undefined"
+  name: plugin_definition
+  level: debug
+  plugin_name: transport
+  when: 1484132633022
+- actid: hxt6ga52oxqr/ysqsf9zkdu2z
+  msg: 
+    role: seneca
+    plugin: define
+    name: transport
+    seq: 1
+    default$: {}
+    fatal$: true
+    local$: true
+    plugin$: 
+      name: transport
+    meta$: 
+      id: hxt6ga52oxqr/ysqsf9zkdu2z
+      tx: ysqsf9zkdu2z
+      pattern: "name:transport,plugin:define,role:seneca,seq:1,tag:undefined"
+      action: (t5n7fd23sbl3)
+      plugin_name: transport
+      plugin_tag: "-"
+      prior: 
+        chain: []
+        entry: true
+        depth: 0
+      start: 1484132633024
+      sync: false
+    tx$: ysqsf9zkdu2z
+  entry: true
+  prior: []
+  meta: 
+    plugin_name: transport
+    plugin_tag: "-"
+    plugin_fullname: transport
+    raw: 
+      role: seneca
+      plugin: define
+      name: transport
+      seq: 1
+    sub: false
+    client: false
+    args: 
+      role: seneca
+      plugin: define
+      name: transport
+      seq: 1
+    rules: {}
+    id: (t5n7fd23sbl3)
+    pattern: "name:transport,plugin:define,role:seneca,seq:1,tag:undefined"
+    msgcanon: 
+      name: transport
+      plugin: define
+      role: seneca
+      seq: 1
+      tag: undefined
+    priorpath: ""
+  client: false
+  listen: false
+  transport: {}
+  kind: act
+  case: IN
+  level: debug
+  plugin_name: transport
+  pattern: "name:transport,plugin:define,role:seneca,seq:1,tag:undefined"
+  when: 1484132633030
+- kind: plugin
+  case: init
+  name: transport
+  options: {}
+  level: debug
+  actid: hxt6ga52oxqr/ysqsf9zkdu2z
+  plugin_name: transport
+  pattern: "name:transport,plugin:define,role:seneca,seq:1,tag:undefined"
+  when: 1484132633033
+- kind: add
+  case: ADD
+  id: (sdvarfa43tjk)
+  pattern: "cmd:inflight,role:transport"
+  name: ""
+  level: debug
+  plugin_name: transport
+  when: 1484132633035
+- kind: add
+  case: ADD
+  id: (aea80pqgyggm)
+  pattern: "cmd:listen,role:transport"
+  name: ""
+  level: debug
+  plugin_name: transport
+  when: 1484132633036
+- kind: add
+  case: ADD
+  id: (2agqhslzllub)
+  pattern: "cmd:client,role:transport"
+  name: ""
+  level: debug
+  plugin_name: transport
+  when: 1484132633037
+- kind: add
+  case: ADD
+  id: (kdyocmsm3key)
+  pattern: "hook:listen,role:transport,type:tcp"
+  name: ""
+  level: debug
+  plugin_name: transport
+  when: 1484132633038
+- kind: add
+  case: ADD
+  id: (hadndtdok91n)
+  pattern: "hook:client,role:transport,type:tcp"
+  name: ""
+  level: debug
+  plugin_name: transport
+  when: 1484132633040
+- kind: add
+  case: ADD
+  id: (az7n4eem328j)
+  pattern: "hook:listen,role:transport,type:web"
+  name: ""
+  level: debug
+  plugin_name: transport
+  when: 1484132633042
+- kind: add
+  case: ADD
+  id: (ayq79bjql0os)
+  pattern: "hook:client,role:transport,type:web"
+  name: ""
+  level: debug
+  plugin_name: transport
+  when: 1484132633044
+- kind: add
+  case: ADD
+  id: (hjcf9dbr8nqc)
+  pattern: "hook:listen,role:transport,type:http"
+  name: ""
+  level: debug
+  plugin_name: transport
+  when: 1484132633045
+- kind: add
+  case: ADD
+  id: (oc28nd1yhi75)
+  pattern: "hook:client,role:transport,type:http"
+  name: ""
+  level: debug
+  plugin_name: transport
+  when: 1484132633046
+- kind: add
+  case: ADD
+  id: (raxkg2hkien2)
+  pattern: "hook:listen,role:transport,type:direct"
+  name: ""
+  level: debug
+  plugin_name: transport
+  when: 1484132633047
+- kind: add
+  case: ADD
+  id: (y55go0b0szj8)
+  pattern: "hook:client,role:transport,type:direct"
+  name: ""
+  level: debug
+  plugin_name: transport
+  when: 1484132633048
+- kind: options
+  case: SET
+  options: 
+    transport: 
+      msgprefix: seneca_
+      callmax: 111111
+      msgidlen: 12
+      warn: 
+        unknown_message_id: true
+        invalid_kind: true
+        invalid_origin: true
+        no_message_id: true
+        message_loop: true
+        own_message: true
+      check: 
+        message_loop: true
+        own_message: true
+      web: 
+        type: web
+        port: 10101
+        host: 0.0.0.0
+        path: /act
+        protocol: http
+        timeout: 5555
+        max_listen_attempts: 11
+        attempt_delay: 222
+        serverOptions: {}
+      tcp: 
+        type: tcp
+        host: 0.0.0.0
+        port: 10201
+        timeout: 5555
+  level: debug
+  actid: hxt6ga52oxqr/ysqsf9zkdu2z
+  plugin_name: transport
+  pattern: "name:transport,plugin:define,role:seneca,seq:1,tag:undefined"
+  when: 1484132633049
+- kind: plugin
+  case: install
+  name: transport
+  exports: 
+    - transport/utils
+  level: debug
+  actid: hxt6ga52oxqr/ysqsf9zkdu2z
+  plugin_name: transport
+  pattern: "name:transport,plugin:define,role:seneca,seq:1,tag:undefined"
+  when: 1484132633066
+- actid: hxt6ga52oxqr/ysqsf9zkdu2z
+  msg: 
+    init: transport
+    default$: {}
+    fatal$: true
+    local$: true
+    plugin$: 
+      name: transport
+    meta$: 
+      id: hdbd9u0n02s8/4lzaghalhty3
+      tx: 4lzaghalhty3
+  meta: {}
+  listen: false
+  transport: {}
+  kind: act
+  case: DEFAULT
+  level: debug
+  plugin_name: transport
+  pattern: "name:transport,plugin:define,role:seneca,seq:1,tag:undefined"
+  when: 1484132633071
+- actid: hxt6ga52oxqr/ysqsf9zkdu2z
+  msg: 
+    init: transport
+    default$: {}
+    fatal$: true
+    local$: true
+    plugin$: 
+      name: transport
+    meta$: 
+      id: hdbd9u0n02s8/4lzaghalhty3
+      tx: 4lzaghalhty3
+  meta: {}
+  listen: false
+  transport: {}
+  kind: act
+  case: OUT
+  duration: 1
+  result: {}
+  level: debug
+  plugin_name: transport
+  pattern: "name:transport,plugin:define,role:seneca,seq:1,tag:undefined"
+  when: 1484132633073
+- kind: plugin
+  case: ready
+  name: transport
+  level: debug
+  actid: hxt6ga52oxqr/ysqsf9zkdu2z
+  plugin_name: transport
+  pattern: "name:transport,plugin:define,role:seneca,seq:1,tag:undefined"
+  when: 1484132633073
+- actid: hxt6ga52oxqr/ysqsf9zkdu2z
+  msg: 
+    role: seneca
+    plugin: define
+    name: transport
+    seq: 1
+    default$: {}
+    fatal$: true
+    local$: true
+    plugin$: 
+      name: transport
+    meta$: 
+      id: hxt6ga52oxqr/ysqsf9zkdu2z
+      tx: ysqsf9zkdu2z
+      pattern: "name:transport,plugin:define,role:seneca,seq:1,tag:undefined"
+      action: (t5n7fd23sbl3)
+      plugin_name: transport
+      plugin_tag: "-"
+      prior: 
+        chain: []
+        entry: true
+        depth: 0
+      start: 1484132633024
+      sync: false
+    tx$: ysqsf9zkdu2z
+  entry: true
+  prior: []
+  meta: 
+    plugin_name: transport
+    plugin_tag: "-"
+    plugin_fullname: transport
+    raw: 
+      role: seneca
+      plugin: define
+      name: transport
+      seq: 1
+    sub: false
+    client: false
+    args: 
+      role: seneca
+      plugin: define
+      name: transport
+      seq: 1
+    rules: {}
+    id: (t5n7fd23sbl3)
+    pattern: "name:transport,plugin:define,role:seneca,seq:1,tag:undefined"
+    msgcanon: 
+      name: transport
+      plugin: define
+      role: seneca
+      seq: 1
+      tag: undefined
+    priorpath: ""
+  client: false
+  listen: false
+  transport: {}
+  kind: act
+  case: OUT
+  duration: 49
+  level: debug
+  plugin_name: transport
+  pattern: "name:transport,plugin:define,role:seneca,seq:1,tag:undefined"
+  when: 1484132633074
+
