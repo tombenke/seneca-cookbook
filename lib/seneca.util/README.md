@@ -1,6 +1,11 @@
 seneca.util
 ===========
 
+Code snippet from seneca.js:
+
+```JavaScript
+    var Common = require('./common')
+
     var seneca_util = {
       deepextend: Common.deepextend,
       recurse: Common.recurse,
@@ -14,3 +19,4 @@ seneca.util
       router: function router () { return Patrun() },
       argprops: Common.argprops
     }
+```
