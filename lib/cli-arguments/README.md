@@ -13,14 +13,17 @@ See [seneca.options](../seneca.options/README.md) for details.
 
 ## --seneca.print.tree
 
+```shell
     $ node lib/index.js --seneca.print.tree
 
     {"kind":"notice","notice":"hello seneca jkytay7wl6jx/1484133584737/6457/3.2.2/-","level":"info","when":1484133584768}
     
     Seneca action patterns for instance: jkytay7wl6jx/1484133584737/6457/3.2.2/-
+```
 
 ### --seneca.print.tree.all
 
+```shell
     $ node lib/index.js --seneca.print.tree.all
 
     {"kind":"notice","notice":"hello seneca 43gpwnv81gbv/1484133603402/6470/3.2.2/-","level":"info","when":1484133603433}
@@ -80,6 +83,7 @@ See [seneca.options](../seneca.options/README.md) for details.
         └── # root$, (2h48pr9mcpxx), action_seneca_stats
 
     Application is running...
+```
 
 ## --seneca.log
 

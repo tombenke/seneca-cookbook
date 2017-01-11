@@ -151,12 +151,16 @@ Example:
 
 The following environment setting will make seneca to automatically print out the options, and set it into `test` mode:
 
+```shell
     export SENECA_OPTIONS='debug:{print:{options:true}},test:true'
     node app_with_options.js
+```
 
 ## Define options in command line
 
+```shell
     node app_with_options.js --seneca.options="log:info,debug:{print:{options:true}}"
+```
 
 ## Print options with `--seneca.print.options`
 
@@ -233,16 +237,19 @@ Prints out useful hints about the actual configuration of the seneca instance.
 
 You can access to the current options via `seneca.options()` call:
 
+```JavaScript
     const seneca = require('seneca')()
 
     seneca.ready( function() {
             console.log(this.options())
         })
+```
 
 ## Print options via configuration
 
 Set the `debug.print.options` property of the seneca options to `true`:
 
+```JavaScript
     // Seneca options object
     {
         debug: {
@@ -251,6 +258,7 @@ Set the `debug.print.options` property of the seneca options to `true`:
             }
         }
     }
+```
 
 ## configure the plugins through the seneca options
 

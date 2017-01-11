@@ -47,6 +47,7 @@ Deprecated logging arguments:
 
 A full log entry:
 
+```JavaScript
 {
     "actid":"uejjgvm6ar7p/f0ie6nejirlj",
     "msg": {
@@ -130,9 +131,11 @@ A full log entry:
     "seneca":"ced1r5jvllgc/1484124582502/4300/3.1.0/-",
     "when":1484124583255
 }
+```
 
 Condensed log entry:
 
+```JavaScript
     "actid":"uejjgvm6ar7p/f0ie6nejirlj",
     "msg": {},
     "entry":true,
@@ -149,7 +152,7 @@ Condensed log entry:
     "pattern":"cmd:close,role:seneca",
     "seneca":"ced1r5jvllgc/1484124582502/4300/3.1.0/-",
     "when":1484124583255
-
+```
 
 ### logspec.aliases ???
 
@@ -162,6 +165,7 @@ Condensed log entry:
 
 ### Examples for seneca.log call
 
+```JavaScript
     instance.log.warn({
         kind: 'act',
         case: 'DEPRECATED',
@@ -179,12 +183,13 @@ Condensed log entry:
         name: action.name,
         callpoint: callpoint
     })
+```
 
 ### log.level([entry, ..])
 
-    The `log.level` method set provides the ability to log directly off the Seneca instance.
-    By default Seneca includes a logging adaptor that emits JSON based logs.
-    You can swap out this adaptor for others.
+The `log.level` method set provides the ability to log directly off the Seneca instance.
+By default Seneca includes a logging adaptor that emits JSON based logs.
+You can swap out this adaptor for others.
 
 Params:
 
@@ -192,6 +197,7 @@ Params:
 
 Configuring a warn log level in Seneca:
 
+```JavaScript
     var seneca = Seneca({
       log: { level: 'warn+' }
     })
@@ -205,15 +211,19 @@ Configuring a warn log level in Seneca:
     // ["warn log level"]
     // ["error log level"]
     // ["fatal log level"]
-    
+```
+
 Configuring a test log level in Seneca:
 
+```JavaScript
     var seneca = Seneca({
       log: 'test'
     })
+```
 
 Object logging, JSON output:
 
+```JavaScript
     var seneca = Seneca({
       log: { level: 'error+' }
     })
@@ -224,6 +234,7 @@ Object logging, JSON output:
     // Output:
     // {"notice":"error log level","level":"error","seneca":"c8i.../147.../13586/3.0.0/-","when":1472737155055}
     // {"notice":"fatal log level","level":"fatal","seneca":"c8i.../147.../13586/3.0.0/-","when":1472737155060}
+```
 
 Notes
 
