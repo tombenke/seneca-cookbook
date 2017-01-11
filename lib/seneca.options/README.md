@@ -106,7 +106,7 @@ TODO
 Seneca options can be loaded from configuration file named `seneca.options.js` that is placed in the current folder.
 This file should be a Node.js module that exports a JSON object.
 
-The `[seneca.options.js](seneca.options.js)` file can specify:
+The [`seneca.options.js`](seneca.options.js) file can specify:
 
 - global Seneca options,
 - and options for individual plugins.
