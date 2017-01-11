@@ -1,20 +1,20 @@
 seneca.options
 ==============
 
-## The parameters of the seneca instance
+## The configuration parameters of the seneca instance
 
 Seneca instances can be configured by the `options` parameter, that is an object.
-find the list of properties of the `options` object, and their default values in the [Internal Defaults section](#internal-defaults) below.
+find the list of properties of the `options` object, and their default values in the [Internal Defaults](#internal-defaults) section below.
 
 The options can be defined via the following ways
 (the order of priority, from highest to lowest):
 
-- Command line
-- Environment variable
-- Source code
-- Custom options file
-- Default options file
-- Internal defaults
+- [Command line](#define-options-in-command-line)
+- [Environment variable](#define-options-through-environment-variables)
+- [Source code](#load-options-in-source-code)
+- [Custom options file](#load-options-from-custom-file)
+- [Default options file](#load-options-from-default-file)
+- [Internal defaults](#internal-defaults)
 
 ### Internal defaults
 
@@ -99,7 +99,7 @@ The options can be defined via the following ways
 
 ### Load options from default file
 
-TODO
+TODO: Investigate what is the difference between default and custom config files?
 
 ### Load options from custom file
 
@@ -149,13 +149,16 @@ Example:
 
 ## Define options through environment variables
 
-TODO
+The following environment setting will make seneca to automatically print out the options, and set it into `test` mode:
+
+    export SENECA_OPTIONS='debug:{print:{options:true}},test:true'
+    node app_with_options.js
 
 ## Define options in command line
 
-TODO
+    node app_with_options.js --seneca.options="log:info,debug:{print:{options:true}}"
 
-## --seneca.print.options
+## Print options with `--seneca.print.options`
 
 Prints out useful hints about the actual configuration of the seneca instance.
 
@@ -226,3 +229,29 @@ Prints out useful hints about the actual configuration of the seneca instance.
       log: {} }
 ```
 
+## Print options from code
+
+You can access to the current options via `seneca.options()` call:
+
+    const seneca = require('seneca')()
+
+    seneca.ready( function() {
+            console.log(this.options())
+        })
+
+## Print options via configuration
+
+Set the `debug.print.options` property of the seneca options to `true`:
+
+    // Seneca options object
+    {
+        debug: {
+            print: {
+                options: true
+            }
+        }
+    }
+
+## configure the plugins through the seneca options
+
+TODO: Write some example with plugins and config!
