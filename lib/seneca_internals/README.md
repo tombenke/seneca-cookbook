@@ -17,7 +17,7 @@ The diagram below demonstrates the dependencies among the internal modules of se
 ![Dependency map of seneca modules](seneca-dependency-map.png?raw=true)
 
 The annotated docs on the internal modules of the seneca.js:
-- [seneca.js](docs/annotated/seneca.html?raw=true)
+- [seneca.js](docs/annotated/seneca.html)
 
 The external modules used by Seneca.js:
 
