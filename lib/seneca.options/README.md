@@ -1,6 +1,14 @@
 seneca.options
 ==============
 
+This section is about:
+
+- What are the built-in, default options?
+- How can I use the `seneca.options.js` to define options?
+- How can I define options through the environment?
+- How are the default, global options defined?
+
+
 ## The configuration parameters of the seneca instance
 
 Seneca instances can be configured by the `options` parameter, that is an object.
@@ -111,26 +119,14 @@ The [`seneca.options.js`](seneca.options.js) file can specify:
 - global Seneca options,
 - and options for individual plugins.
 
+__In theory:__ 
 Top level properties that match the name of a plugin are used to provide options to plugins when they are loaded.
-
 If you are using tags to create multiple instances of the same plugin,
 you can use the $suffix convention to specify options particular to a given tagged plugin instance.
-  
-Example:
 
-```JavaScript
-    // seneca.options.js
-    module.exports = {
-      zed: {
-        red:   50,
-        green: 100,
-        blue:  150,
-      },
-      'zed$tag0': {
-        red:   55,
-      }
-    }
-```
+TODO:
+- Clarify how the plugin config really works!
+- What is the purpose of `options.plugins` object? (Register plugins specified in options?)
 
 ## Load options in source code
 
