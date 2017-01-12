@@ -30,13 +30,14 @@ The annotated docs on the internal modules of the seneca.js:
 - [lib/logging.js](https://htmlpreview.github.io/?https://github.com/tombenke/seneca-cookbook/blob/master/lib/seneca_internals/docs/annotated/logging.html)
   TBD.
 - [lib/optioner.js](https://htmlpreview.github.io/?https://github.com/tombenke/seneca-cookbook/blob/master/lib/seneca_internals/docs/annotated/optioner.html)
-  TBD.
+  Managing the seneca options for the core modul, including the loading from several sources and overriding in the predefined order.
 - [lib/plugins.js](https://htmlpreview.github.io/?https://github.com/tombenke/seneca-cookbook/blob/master/lib/seneca_internals/docs/annotated/plugins.html)
   TBD.
 - [lib/print.js](https://htmlpreview.github.io/?https://github.com/tombenke/seneca-cookbook/blob/master/lib/seneca_internals/docs/annotated/print.html)
-  TBD.
+  Print out the action patterns tree, and the options to the console.
 
 The external modules used by Seneca.js:
+
 
 - [Node API modules](https://nodejs.org/dist/latest-v7.x/docs/api/): [events](https://nodejs.org/api/events.html), [util](https://nodejs.org/api/util.html), [assert](https://nodejs.org/api/assert.html), [fs](https://nodejs.org/api/fs.html).
 - [archy](https://github.com/substack/node-archy): render nested hierarchies `npm ls` style with unicode pipes.
