@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>print.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page_wrapper">
+            <div id="jump_page">
+              
+                
+                <a class="source" href="actions.html">
+                  actions.js
+                </a>
+              
+                
+                <a class="source" href="common.html">
+                  common.js
+                </a>
+              
+                
+                <a class="source" href="errors.html">
+                  errors.js
+                </a>
+              
+                
+                <a class="source" href="legacy.html">
+                  legacy.js
+                </a>
+              
+                
+                <a class="source" href="logging.html">
+                  logging.js
+                </a>
+              
+                
+                <a class="source" href="optioner.html">
+                  optioner.js
+                </a>
+              
+                
+                <a class="source" href="plugins.html">
+                  plugins.js
+                </a>
+              
+                
+                <a class="source" href="print.html">
+                  print.js
+                </a>
+              
+                
+                <a class="source" href="transport.html">
+                  transport.js
+                </a>
+              
+                
+                <a class="source" href="seneca.html">
+                  seneca.js
+                </a>
+              
+            </div>
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>print.js</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-comment">/* Copyright (c) 2015 Richard Rodger, MIT License */</span>
+<span class="hljs-meta">'use strict'</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>Node API modules</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">var</span> Util = <span class="hljs-built_in">require</span>(<span class="hljs-string">'util'</span>)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <p>External modules.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">var</span> _ = <span class="hljs-built_in">require</span>(<span class="hljs-string">'lodash'</span>)
+<span class="hljs-keyword">var</span> Archy = <span class="hljs-built_in">require</span>(<span class="hljs-string">'archy'</span>)
+<span class="hljs-keyword">var</span> Minimist = <span class="hljs-built_in">require</span>(<span class="hljs-string">'minimist'</span>)
+
+
+<span class="hljs-comment">/** Handle command line specific functionality */</span>
+<span class="hljs-built_in">module</span>.exports = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">seneca</span>) </span>{
+  <span class="hljs-keyword">var</span> argv = Minimist(process.argv.slice(<span class="hljs-number">2</span>))
+  <span class="hljs-keyword">if</span> (!argv || !argv.seneca) {
+    <span class="hljs-keyword">return</span>
+  }
+  <span class="hljs-keyword">var</span> cmdspec = argv.seneca
+  <span class="hljs-keyword">if</span> (cmdspec.print) {
+    <span class="hljs-keyword">if</span> (cmdspec.print.tree) {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <p>Hack! Complex init means non-deterministic or multiple ready calls,
+so just delay tree print by some number of seconds to capture full tree.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">var</span> delay_seconds = cmdspec.print.tree.all || cmdspec.print.tree
+      <span class="hljs-keyword">if</span> (_.isNumber(delay_seconds)) {
+        setTimeout(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+          print_tree(seneca, cmdspec)
+        }, <span class="hljs-number">1000</span> * delay_seconds)
+      }
+      <span class="hljs-keyword">else</span> {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <p>Print after first ready</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        seneca.ready(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+          print_tree(<span class="hljs-keyword">this</span>, cmdspec)
+        })
+      }
+    }
+
+    <span class="hljs-keyword">if</span> (cmdspec.print.options) {
+      seneca.options({ <span class="hljs-attr">debug</span>: { <span class="hljs-attr">print</span>: { <span class="hljs-attr">options</span>: <span class="hljs-literal">true</span> } } })
+    }
+  }
+}
+
+
+<span class="hljs-built_in">module</span>.exports.print_options = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">print_options</span> (<span class="hljs-params">options</span>) </span>{
+  <span class="hljs-keyword">if</span> (options.debug.print.options) {
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'\nSeneca Options ('</span> + root.id + <span class="hljs-string">'): before plugins\n'</span> + <span class="hljs-string">'===\n'</span>)
+    <span class="hljs-built_in">console</span>.log(Util.inspect(options, { <span class="hljs-attr">depth</span>: <span class="hljs-literal">null</span> }))
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">''</span>)
+  }
+}
+
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">print_tree</span> (<span class="hljs-params">seneca, cmdspec</span>) </span>{
+  <span class="hljs-keyword">var</span> tree = {
+    <span class="hljs-attr">label</span>: <span class="hljs-string">'Seneca action patterns for instance: '</span> + seneca.id,
+    <span class="hljs-attr">nodes</span>: []
+  }
+
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">insert</span> (<span class="hljs-params">nodes, current</span>) </span>{
+    <span class="hljs-keyword">if</span> (nodes.length === <span class="hljs-number">0</span>) <span class="hljs-keyword">return</span>
+
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; current.nodes.length; i++) {
+      <span class="hljs-keyword">if</span> (nodes[<span class="hljs-number">0</span>] === current.nodes[i].label) {
+        <span class="hljs-keyword">return</span> insert(nodes.slice(<span class="hljs-number">1</span>), current.nodes[i])
+      }
+    }
+
+    <span class="hljs-keyword">var</span> nn = {<span class="hljs-attr">label</span>: nodes[<span class="hljs-number">0</span>], <span class="hljs-attr">nodes</span>: []}
+    current.nodes.push(nn)
+    insert(nodes.slice(<span class="hljs-number">1</span>), nn)
+  }
+
+  _.each(seneca.list(), <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">pat</span>) </span>{
+    <span class="hljs-keyword">var</span> nodes = []
+    <span class="hljs-keyword">var</span> ignore = <span class="hljs-literal">false</span>
+    _.each(pat, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">v, k</span>) </span>{
+      <span class="hljs-keyword">if</span> (!cmdspec.print.tree.all &amp;&amp;
+        (k === <span class="hljs-string">'role'</span> &amp;&amp;
+        (v === <span class="hljs-string">'seneca'</span> ||
+        v === <span class="hljs-string">'basic'</span> ||
+        v === <span class="hljs-string">'util'</span> ||
+        v === <span class="hljs-string">'entity'</span> ||
+        v === <span class="hljs-string">'web'</span> ||
+        v === <span class="hljs-string">'transport'</span> ||
+        v === <span class="hljs-string">'options'</span> ||
+        v === <span class="hljs-string">'mem-store'</span> ||
+        v === <span class="hljs-string">'seneca'</span>
+       )) ||
+        k === <span class="hljs-string">'init'</span>
+     ) {
+        ignore = <span class="hljs-literal">true</span>
+      }
+      <span class="hljs-keyword">else</span> {
+        nodes.push(k + <span class="hljs-string">':'</span> + v)
+      }
+    })
+
+    <span class="hljs-keyword">if</span> (!ignore) {
+      <span class="hljs-keyword">var</span> meta = seneca.find(pat)
+
+      <span class="hljs-keyword">var</span> metadesc = []
+      <span class="hljs-keyword">while</span> (meta) {
+        metadesc.push(<span class="hljs-string">'# '</span> + (meta.plugin_fullname || <span class="hljs-string">'-'</span>) +
+          <span class="hljs-string">', '</span> + meta.id + <span class="hljs-string">', '</span> + meta.func.name)
+        meta = meta.priormeta
+      }
+
+      nodes.push((metadesc.join(<span class="hljs-string">'\n'</span>)))
+
+      insert(nodes, tree)
+    }
+  })
+
+  <span class="hljs-built_in">console</span>.log(Archy(tree))
+}</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

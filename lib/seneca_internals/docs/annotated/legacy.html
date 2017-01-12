@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>legacy.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page_wrapper">
+            <div id="jump_page">
+              
+                
+                <a class="source" href="actions.html">
+                  actions.js
+                </a>
+              
+                
+                <a class="source" href="common.html">
+                  common.js
+                </a>
+              
+                
+                <a class="source" href="errors.html">
+                  errors.js
+                </a>
+              
+                
+                <a class="source" href="legacy.html">
+                  legacy.js
+                </a>
+              
+                
+                <a class="source" href="logging.html">
+                  logging.js
+                </a>
+              
+                
+                <a class="source" href="optioner.html">
+                  optioner.js
+                </a>
+              
+                
+                <a class="source" href="plugins.html">
+                  plugins.js
+                </a>
+              
+                
+                <a class="source" href="print.html">
+                  print.js
+                </a>
+              
+                
+                <a class="source" href="transport.html">
+                  transport.js
+                </a>
+              
+                
+                <a class="source" href="seneca.html">
+                  seneca.js
+                </a>
+              
+            </div>
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>legacy.js</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-comment">/* Copyright (c) 2010-2016 Richard Rodger and other contributors, MIT License */</span>
+<span class="hljs-meta">'use strict'</span>
+
+<span class="hljs-keyword">var</span> _ = <span class="hljs-built_in">require</span>(<span class="hljs-string">'lodash'</span>)
+<span class="hljs-keyword">var</span> Eraro = <span class="hljs-built_in">require</span>(<span class="hljs-string">'eraro'</span>)
+<span class="hljs-keyword">var</span> Common = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./common'</span>)
+<span class="hljs-keyword">var</span> Errors = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./errors'</span>)
+
+<span class="hljs-keyword">var</span> internals = {
+  <span class="hljs-attr">error</span>: Eraro({
+    <span class="hljs-attr">package</span>: <span class="hljs-string">'seneca'</span>,
+    <span class="hljs-attr">msgmap</span>: Errors,
+    <span class="hljs-attr">override</span>: <span class="hljs-literal">true</span>
+  })
+}
+
+exports.fail = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">make_legacy_fail</span> (<span class="hljs-params">so</span>) </span>{
+  <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">var</span> argsarr = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Array</span>(<span class="hljs-built_in">arguments</span>.length)
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> l = <span class="hljs-number">0</span>; l &lt; argsarr.length; ++l) { argsarr[l] = <span class="hljs-built_in">arguments</span>[l] }
+
+    <span class="hljs-keyword">var</span> cb = _.isFunction(argsarr[argsarr.length - <span class="hljs-number">1</span>])
+      ? argsarr[argsarr.length - <span class="hljs-number">1</span>] : <span class="hljs-literal">null</span>
+
+    <span class="hljs-keyword">if</span> (cb) {
+      argsarr.pop()
+    }
+
+    <span class="hljs-keyword">if</span> (_.isObject(argsarr[<span class="hljs-number">0</span>])) {
+      <span class="hljs-keyword">var</span> code = argsarr[<span class="hljs-number">0</span>].code
+      <span class="hljs-keyword">if</span> (_.isString(code)) {
+        argsarr.unshift(code)
+      }
+    }
+
+    <span class="hljs-keyword">var</span> err = internals.error.apply(<span class="hljs-literal">null</span>, argsarr)
+    err.callpoint = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>().stack.match(<span class="hljs-regexp">/^.*\n.*\n\s*(.*)/</span>)[<span class="hljs-number">1</span>]
+    err.seneca = { <span class="hljs-attr">code</span>: err.code, <span class="hljs-attr">valmap</span>: err.details }
+
+    <span class="hljs-keyword">this</span>.log.error(Common.make_standard_err_log_entry(err))
+    <span class="hljs-keyword">if</span> (so.errhandler) {
+      so.errhandler.call(<span class="hljs-keyword">this</span>, err)
+    }
+
+    <span class="hljs-keyword">if</span> (cb) {
+      cb.call(<span class="hljs-keyword">this</span>, err)
+    }
+
+    <span class="hljs-keyword">return</span> err
+  }
+}</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

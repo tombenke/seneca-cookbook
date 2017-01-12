@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>plugins.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page_wrapper">
+            <div id="jump_page">
+              
+                
+                <a class="source" href="actions.html">
+                  actions.js
+                </a>
+              
+                
+                <a class="source" href="common.html">
+                  common.js
+                </a>
+              
+                
+                <a class="source" href="errors.html">
+                  errors.js
+                </a>
+              
+                
+                <a class="source" href="legacy.html">
+                  legacy.js
+                </a>
+              
+                
+                <a class="source" href="logging.html">
+                  logging.js
+                </a>
+              
+                
+                <a class="source" href="optioner.html">
+                  optioner.js
+                </a>
+              
+                
+                <a class="source" href="plugins.html">
+                  plugins.js
+                </a>
+              
+                
+                <a class="source" href="print.html">
+                  print.js
+                </a>
+              
+                
+                <a class="source" href="transport.html">
+                  transport.js
+                </a>
+              
+                
+                <a class="source" href="seneca.html">
+                  seneca.js
+                </a>
+              
+            </div>
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>plugins.js</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-comment">/* Copyright (c) 2014-2015 Richard Rodger, MIT License */</span>
+<span class="hljs-meta">'use strict'</span>
+
+<span class="hljs-keyword">var</span> Util = <span class="hljs-built_in">require</span>(<span class="hljs-string">'util'</span>)
+<span class="hljs-keyword">var</span> _ = <span class="hljs-built_in">require</span>(<span class="hljs-string">'lodash'</span>)
+<span class="hljs-keyword">var</span> Eraro = <span class="hljs-built_in">require</span>(<span class="hljs-string">'eraro'</span>)
+<span class="hljs-keyword">var</span> Common = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./common'</span>)
+
+<span class="hljs-keyword">var</span> internals = {
+  <span class="hljs-attr">error</span>: Eraro({
+    <span class="hljs-attr">package</span>: <span class="hljs-string">'seneca'</span>,
+    <span class="hljs-attr">msgmap</span>: {
+      <span class="hljs-attr">unsupported_legacy_plugin</span>: <span class="hljs-string">'The plugin &lt;%=name%&gt; uses an unsupported legacy '</span> +
+        <span class="hljs-string">'callback to indicate plugin definition is complete: &lt;%=init_func_sig%&gt; '</span> +
+        <span class="hljs-string">'... }. The correct format is: function(options) { ... }. For more details, '</span> +
+        <span class="hljs-string">'please see http://senecajs.org/tutorials/how-to-write-a-plugin.html'</span>
+    }
+  })
+}
+
+<span class="hljs-built_in">module</span>.exports.register = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">so, callpoint</span>) </span>{
+  <span class="hljs-keyword">var</span> seq = <span class="hljs-number">0</span>
+
+  <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">api_register</span> (<span class="hljs-params">plugin</span>) </span>{
+    <span class="hljs-keyword">var</span> seneca = <span class="hljs-keyword">this</span>
+
+    <span class="hljs-keyword">var</span> preload = plugin.init.preload
+    preload = _.isFunction(preload) ? preload : _.noop
+    <span class="hljs-keyword">var</span> meta = preload.call(seneca, plugin) || {}
+
+    <span class="hljs-keyword">var</span> fullname = plugin.name + (plugin.tag ? <span class="hljs-string">'/'</span> + plugin.tag : <span class="hljs-string">''</span>)
+    plugin.fullname = fullname
+
+    <span class="hljs-keyword">var</span> delegate = make_delegate(seneca, plugin)
+
+    seq++
+
+    <span class="hljs-keyword">var</span> plugin_define_pattern = {
+      <span class="hljs-attr">role</span>: <span class="hljs-string">'seneca'</span>,
+      <span class="hljs-attr">plugin</span>: <span class="hljs-string">'define'</span>,
+      <span class="hljs-attr">name</span>: plugin.name,
+      <span class="hljs-attr">seq</span>: seq
+    }
+
+    <span class="hljs-keyword">if</span> (plugin.tag !== <span class="hljs-literal">null</span>) {
+      plugin_define_pattern.tag = plugin.tag
+    }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>seneca</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    delegate
+      .add(plugin_define_pattern, plugin_definition)
+      .act({
+        <span class="hljs-attr">role</span>: <span class="hljs-string">'seneca'</span>,
+        <span class="hljs-attr">plugin</span>: <span class="hljs-string">'define'</span>,
+        <span class="hljs-attr">name</span>: plugin.name,
+        <span class="hljs-attr">tag</span>: plugin.tag,
+        <span class="hljs-attr">seq</span>: seq,
+        <span class="hljs-attr">default$</span>: {},</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <p>gate$: true,</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        fatal$: <span class="hljs-literal">true</span>,
+        <span class="hljs-attr">local$</span>: <span class="hljs-literal">true</span>
+      })</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <p>needed for seneca.export to operate for plugins like seneca-web</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">var</span> preloadName = meta.name || plugin.name
+    <span class="hljs-keyword">var</span> preloadRef = preloadName + (plugin.tag ? <span class="hljs-string">'/'</span> + plugin.tag : <span class="hljs-string">''</span>)
+    seneca.private$.exports[preloadName] = meta.export || plugin
+
+    resolve_plugin_exports(seneca, preloadRef, meta)
+
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">plugin_definition</span> (<span class="hljs-params">msg, plugin_done</span>) </span>{
+      <span class="hljs-keyword">var</span> plugin_seneca = <span class="hljs-keyword">this</span>
+      <span class="hljs-keyword">var</span> plugin_options = resolve_options(fullname, plugin, seneca)
+
+      plugin_seneca.log.debug({
+        <span class="hljs-attr">kind</span>: <span class="hljs-string">'plugin'</span>,
+        <span class="hljs-attr">case</span>: <span class="hljs-string">'init'</span>,
+        <span class="hljs-attr">name</span>: plugin.name,
+        <span class="hljs-attr">tag</span>: plugin.tag,
+        <span class="hljs-attr">options</span>: plugin_options,
+        <span class="hljs-attr">callpoint</span>: callpoint
+      })
+
+      <span class="hljs-keyword">try</span> {
+        meta = define_plugin(plugin_seneca, plugin, plugin_options)
+      }
+      <span class="hljs-keyword">catch</span> (e) {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <p>TODO: needs wrapping</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">return</span> plugin_done(e)
+      }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <p>legacy api for service function</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">if</span> (_.isFunction(meta)) {
+        meta = {<span class="hljs-attr">service</span>: meta}
+      }
+
+      plugin.name = meta.name || plugin.name
+      plugin.tag =
+        meta.tag ||
+        plugin.tag ||
+        (plugin.options &amp;&amp; plugin.options.tag$)
+
+      plugin.fullname = plugin.name + (plugin.tag ? <span class="hljs-string">'/'</span> + plugin.tag : <span class="hljs-string">''</span>)
+
+      plugin.service = meta.service || plugin.service
+
+      plugin_seneca.__update_plugin__(plugin)
+
+      <span class="hljs-keyword">var</span> pluginref = plugin.name + (plugin.tag ? <span class="hljs-string">'/'</span> + plugin.tag : <span class="hljs-string">''</span>)
+      seneca.private$.plugins[pluginref] = plugin
+
+      seneca.private$.plugin_order.byname.push(plugin.name)
+      seneca.private$.plugin_order.byname = _.uniq(seneca.private$.plugin_order.byname)
+      seneca.private$.plugin_order.byref.push(pluginref)
+
+
+      <span class="hljs-keyword">var</span> exports = resolve_plugin_exports(plugin_seneca, pluginref, meta)
+
+      plugin_seneca.log.debug({
+        <span class="hljs-attr">kind</span>: <span class="hljs-string">'plugin'</span>,
+        <span class="hljs-attr">case</span>: <span class="hljs-string">'install'</span>,
+        <span class="hljs-attr">name</span>: plugin.name,
+        <span class="hljs-attr">tag</span>: plugin.tag,
+        <span class="hljs-attr">exports</span>: exports
+      })
+
+      plugin_seneca.act(
+        {
+          <span class="hljs-attr">init</span>: plugin.name,
+          <span class="hljs-attr">tag</span>: plugin.tag,
+          <span class="hljs-attr">default$</span>: {},
+          <span class="hljs-attr">fatal$</span>: <span class="hljs-literal">true</span>,
+          <span class="hljs-attr">local$</span>: <span class="hljs-literal">true</span>
+        },
+        <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">err, out</span>) </span>{
+          <span class="hljs-keyword">if</span> (err) {
+            <span class="hljs-keyword">var</span> plugin_err_code = <span class="hljs-string">'plugin_init'</span>
+
+            plugin.plugin_error = err.message
+
+            <span class="hljs-keyword">if</span> (err.code === <span class="hljs-string">'action-timeout'</span>) {
+              plugin_err_code = <span class="hljs-string">'plugin_init_timeout'</span>
+              plugin.timeout = so.timeout
+            }
+
+            <span class="hljs-keyword">return</span> plugin_seneca.die(internals.error(err, plugin_err_code, plugin))
+          }
+
+          <span class="hljs-keyword">var</span> fullname = plugin.name + (plugin.tag ? <span class="hljs-string">'$'</span> + plugin.tag : <span class="hljs-string">''</span>)
+
+          <span class="hljs-keyword">if</span> (so.debug.print &amp;&amp; so.debug.print.options) {
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'\nSeneca Options ('</span> + seneca.id + <span class="hljs-string">'): plugin: '</span> +
+                        fullname + <span class="hljs-string">'\n'</span> +
+                        <span class="hljs-string">'===\n'</span>)
+            <span class="hljs-built_in">console</span>.log(Util.inspect(plugin_options, { <span class="hljs-attr">depth</span>: <span class="hljs-literal">null</span> }))
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">''</span>)
+          }
+
+          plugin_seneca.log.debug({
+            <span class="hljs-attr">kind</span>: <span class="hljs-string">'plugin'</span>,
+            <span class="hljs-attr">case</span>: <span class="hljs-string">'ready'</span>,
+            <span class="hljs-attr">name</span>: plugin.name,
+            <span class="hljs-attr">tag</span>: plugin.tag
+          })
+
+          plugin_done()
+        }
+      )
+    }
+  }
+}
+
+internals.isRegistered = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">api_hasplugin</span> (<span class="hljs-params">plugindesc, tag</span>) </span>{
+  <span class="hljs-keyword">var</span> seneca = <span class="hljs-keyword">this</span>
+  tag = (tag === <span class="hljs-string">''</span> || tag === <span class="hljs-string">'-'</span>) ? <span class="hljs-literal">null</span> : tag
+  <span class="hljs-keyword">return</span> !!seneca.findplugin(plugindesc, tag)
+}
+
+internals.find = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">find</span> (<span class="hljs-params">plugindesc, tag</span>) </span>{
+  <span class="hljs-keyword">var</span> seneca = <span class="hljs-keyword">this</span>
+  <span class="hljs-keyword">var</span> name = plugindesc.name || plugindesc
+  tag = plugindesc.tag || tag
+
+  <span class="hljs-keyword">var</span> key = name + (tag ? <span class="hljs-string">'/'</span> + tag : <span class="hljs-string">''</span>)
+  <span class="hljs-keyword">var</span> plugin = seneca.private$.plugins[key]
+
+  <span class="hljs-keyword">return</span> plugin
+}
+
+internals.all = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">all</span> (<span class="hljs-params"></span>) </span>{
+  <span class="hljs-keyword">return</span> _.clone(<span class="hljs-keyword">this</span>.private$.plugins)
+}
+
+<span class="hljs-built_in">module</span>.exports.make_delegate = make_delegate
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">resolve_options</span> (<span class="hljs-params">fullname, plugindef, seneca</span>) </span>{
+  <span class="hljs-keyword">var</span> so = seneca.options()
+
+  <span class="hljs-keyword">var</span> fullname_options = _.extend(
+    {},
+    so[fullname],
+    so.plugin[fullname],
+    so[fullname + <span class="hljs-string">'$'</span> + plugindef.tag],
+    so.plugin[fullname + <span class="hljs-string">'$'</span> + plugindef.tag]
+ )
+
+  <span class="hljs-keyword">var</span> shortname = fullname !== plugindef.name ? plugindef.name : <span class="hljs-literal">null</span>
+  <span class="hljs-keyword">if</span> (!shortname &amp;&amp; fullname.indexOf(<span class="hljs-string">'seneca-'</span>) === <span class="hljs-number">0</span>) {
+    shortname = fullname.substring(<span class="hljs-string">'seneca-'</span>.length)
+  }
+
+  <span class="hljs-keyword">var</span> shortname_options = _.extend(
+    {},
+    so[shortname],
+    so.plugin[shortname],
+    so[shortname + <span class="hljs-string">'$'</span> + plugindef.tag],
+    so.plugin[shortname + <span class="hljs-string">'$'</span> + plugindef.tag]
+ )
+
+  <span class="hljs-keyword">var</span> outopts = _.extend({},
+    shortname_options,
+    fullname_options,
+    plugindef.options || {})
+
+  <span class="hljs-keyword">return</span> outopts
+}
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">make_delegate</span> (<span class="hljs-params">instance, plugin</span>) </span>{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              <p>Adjust Seneca API to be plugin specific.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-keyword">var</span> delegate = instance.delegate({
+    <span class="hljs-attr">plugin$</span>: {
+      <span class="hljs-attr">name</span>: plugin.name,
+      <span class="hljs-attr">tag</span>: plugin.tag
+    },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-8">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
+              <p>Act calls inside the plugin definition function are not gated.
+ungate$: true,</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    fatal$: <span class="hljs-literal">true</span>
+  })
+
+  delegate.plugin_foo = <span class="hljs-literal">true</span>
+
+  delegate.private$ = <span class="hljs-built_in">Object</span>.create(instance.private$)
+  delegate.private$.ge = delegate.private$.ge.gate()
+
+  delegate.log = instance.make_log(
+    delegate,
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">plugin_delegate_log_modifier</span> (<span class="hljs-params">data</span>) </span>{
+      data.plugin_name = plugin.name
+      data.plugin_tag = plugin.tag
+    })
+
+  delegate.die = Common.makedie(delegate, { <span class="hljs-attr">type</span>: <span class="hljs-string">'plugin'</span>, <span class="hljs-attr">plugin</span>: plugin.name })
+
+  <span class="hljs-keyword">var</span> actmetalist = []
+
+  delegate.add = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">var</span> argsarr = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Array</span>(<span class="hljs-built_in">arguments</span>.length)
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> l = <span class="hljs-number">0</span>; l &lt; argsarr.length; ++l) { argsarr[l] = <span class="hljs-built_in">arguments</span>[l] }
+
+    <span class="hljs-keyword">var</span> actmeta = argsarr[argsarr.length - <span class="hljs-number">1</span>] || {}
+
+    <span class="hljs-keyword">if</span> (_.isFunction(actmeta)) {
+      actmeta = {}
+      argsarr.push(actmeta)
+    }
+
+    actmeta.plugin_name = plugin.name || <span class="hljs-string">'-'</span>
+    actmeta.plugin_tag = plugin.tag || <span class="hljs-string">'-'</span>
+    actmeta.plugin_fullname = plugin.fullname</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-9">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-9">&#182;</a>
+              </div>
+              <p>TODO: is this necessary?</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    actmeta.log = delegate.log
+
+    actmetalist.push(actmeta)
+
+    instance.add.apply(delegate, argsarr)
+
+    <span class="hljs-keyword">return</span> delegate
+  }
+
+  delegate.__update_plugin__ = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">plugin</span>) </span>{
+    delegate.context.name = plugin.name || <span class="hljs-string">'-'</span>
+    delegate.context.tag = plugin.tag || <span class="hljs-string">'-'</span>
+    delegate.context.full = plugin.fullname || <span class="hljs-string">'-'</span>
+
+    _.each(actmetalist, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">actmeta</span>) </span>{
+      actmeta.plugin_name = plugin.name || actmeta.plugin_name || <span class="hljs-string">'-'</span>
+      actmeta.plugin_tag = plugin.tag || actmeta.plugin_tag || <span class="hljs-string">'-'</span>
+      actmeta.plugin_fullname =
+        plugin.fullname || actmeta.plugin_fullname || <span class="hljs-string">'-'</span>
+    })
+  }
+
+  delegate.context.module = plugin.parent || <span class="hljs-built_in">module</span>
+  delegate.context.name = plugin.name || <span class="hljs-string">'-'</span>
+  delegate.context.tag = plugin.tag || <span class="hljs-string">'-'</span>
+  delegate.context.full = plugin.fullname
+  delegate.context.isplugin = <span class="hljs-literal">true</span>
+
+  <span class="hljs-keyword">return</span> delegate
+}
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">define_plugin</span> (<span class="hljs-params">delegate, plugin, options</span>) </span>{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-10">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-10">&#182;</a>
+              </div>
+              <p>legacy plugins</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-keyword">if</span> (plugin.init.length &gt; <span class="hljs-number">1</span>) {
+    plugin.init_func_sig = plugin.init.toString().match(<span class="hljs-regexp">/^(.*)\n/</span>)[<span class="hljs-number">1</span>]
+    <span class="hljs-keyword">throw</span> internals.error(<span class="hljs-string">'unsupported_legacy_plugin'</span>, plugin)
+  }
+
+  <span class="hljs-keyword">var</span> meta = plugin.init.call(delegate, options) || {}
+
+  meta = _.isString(meta) ? {<span class="hljs-attr">name</span>: meta} : meta
+  meta.options = meta.options || options
+
+  <span class="hljs-keyword">var</span> updated_options = {}
+  updated_options[plugin.fullname] = meta.options
+  delegate.options(updated_options)
+
+  <span class="hljs-keyword">return</span> meta
+}
+
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">resolve_plugin_exports</span> (<span class="hljs-params">seneca, pluginref, meta</span>) </span>{
+  <span class="hljs-keyword">var</span> exports = []
+
+  <span class="hljs-keyword">if</span> (meta.export !== <span class="hljs-keyword">void</span> <span class="hljs-number">0</span>) {
+    seneca.private$.exports[pluginref] = meta.export
+    exports.push(pluginref)
+  }
+
+  <span class="hljs-keyword">if</span> (_.isObject(meta.exportmap) || _.isObject(meta.exports)) {
+    meta.exportmap = meta.exportmap || meta.exports
+    _.each(meta.exportmap, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">v, k</span>) </span>{
+      <span class="hljs-keyword">if</span> (v !== <span class="hljs-keyword">void</span> <span class="hljs-number">0</span>) {
+        <span class="hljs-keyword">var</span> exportname = pluginref + <span class="hljs-string">'/'</span> + k
+        seneca.private$.exports[exportname] = v
+        exports.push(exportname)
+      }
+    })
+  }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-11">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-11">&#182;</a>
+              </div>
+              <p>Specific Seneca extension points</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-keyword">if</span> (_.isObject(meta.extend)) {
+    <span class="hljs-keyword">if</span> (_.isFunction(meta.extend.action_modifier)) {
+      seneca.private$.action_modifiers.push(meta.extend.action_modifier)
+    }
+
+    <span class="hljs-keyword">if</span> (_.isFunction(meta.extend.logger)) {
+      <span class="hljs-keyword">if</span> (!meta.extend.logger.replace &amp;&amp;
+          _.isFunction(seneca.private$.logger.add)) {
+        seneca.private$.logger.add(meta.extend.logger)
+      }
+      <span class="hljs-keyword">else</span> {
+        seneca.private$.logger = meta.extend.logger
+      }
+    }
+  }
+
+  <span class="hljs-keyword">return</span> exports
+}
+
+
+<span class="hljs-built_in">module</span>.exports.api_decorations = {
+  <span class="hljs-attr">hasplugin</span>: internals.isRegistered,
+  <span class="hljs-attr">findplugin</span>: internals.find,
+  <span class="hljs-attr">plugins</span>: internals.all
+}</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

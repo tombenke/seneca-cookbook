@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>logging.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page_wrapper">
+            <div id="jump_page">
+              
+                
+                <a class="source" href="actions.html">
+                  actions.js
+                </a>
+              
+                
+                <a class="source" href="common.html">
+                  common.js
+                </a>
+              
+                
+                <a class="source" href="errors.html">
+                  errors.js
+                </a>
+              
+                
+                <a class="source" href="legacy.html">
+                  legacy.js
+                </a>
+              
+                
+                <a class="source" href="logging.html">
+                  logging.js
+                </a>
+              
+                
+                <a class="source" href="optioner.html">
+                  optioner.js
+                </a>
+              
+                
+                <a class="source" href="plugins.html">
+                  plugins.js
+                </a>
+              
+                
+                <a class="source" href="print.html">
+                  print.js
+                </a>
+              
+                
+                <a class="source" href="transport.html">
+                  transport.js
+                </a>
+              
+                
+                <a class="source" href="seneca.html">
+                  seneca.js
+                </a>
+              
+            </div>
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>logging.js</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-comment">/* Copyright (c) 2016 Richard Rodger and other contributors, MIT License */</span>
+<span class="hljs-meta">'use strict'</span>
+
+
+<span class="hljs-keyword">var</span> Util = <span class="hljs-built_in">require</span>(<span class="hljs-string">'util'</span>)
+
+
+<span class="hljs-keyword">var</span> Stringify = <span class="hljs-built_in">require</span>(<span class="hljs-string">'json-stringify-safe'</span>)
+<span class="hljs-keyword">var</span> LogFilter = <span class="hljs-built_in">require</span>(<span class="hljs-string">'seneca-log-filter'</span>)
+<span class="hljs-keyword">var</span> _ = <span class="hljs-built_in">require</span>(<span class="hljs-string">'lodash'</span>)
+
+<span class="hljs-built_in">module</span>.exports = logging
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">logging</span> (<span class="hljs-params">options</span>) </span>{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>Everything is in preload as logging plugins are
+a special case that need to be loaded before any calls to seneca.log.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>}
+
+logging.preload = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+  <span class="hljs-keyword">var</span> seneca = <span class="hljs-keyword">this</span>
+  <span class="hljs-keyword">var</span> so = seneca.options()
+  <span class="hljs-keyword">var</span> logspec = so.log.basic || so.log || {}
+
+  <span class="hljs-keyword">var</span> origspec = logspec
+
+  <span class="hljs-keyword">if</span> (_.isString(logspec)) {
+    <span class="hljs-keyword">if</span> (<span class="hljs-string">'quiet'</span> === logspec) {
+      logspec = {<span class="hljs-attr">level</span>: <span class="hljs-string">'none'</span>}
+    }
+    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-string">'silent'</span> === logspec) {
+      logspec = {<span class="hljs-attr">level</span>: <span class="hljs-string">'none'</span>}
+    }
+    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-string">'any'</span> === logspec) {
+      logspec = {<span class="hljs-attr">level</span>: <span class="hljs-string">'debug+'</span>}
+    }
+    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-string">'all'</span> === logspec) {
+      logspec = {<span class="hljs-attr">level</span>: <span class="hljs-string">'debug+'</span>}
+    }
+    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-string">'print'</span> === logspec) {
+      logspec = {<span class="hljs-attr">level</span>: <span class="hljs-string">'debug+'</span>}
+    }
+    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-string">'standard'</span> === logspec) {
+      logspec = {<span class="hljs-attr">level</span>: <span class="hljs-string">'info+'</span>}
+    }
+    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-string">'test'</span> === logspec) {
+      logspec = {<span class="hljs-attr">level</span>: <span class="hljs-string">'warn+'</span>}
+    }
+  }
+
+  <span class="hljs-keyword">var</span> logrouter = LogFilter(logspec)
+
+  <span class="hljs-keyword">var</span> logger = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">seneca, data</span>) </span>{
+    <span class="hljs-keyword">if</span> (logrouter(data)) {
+      <span class="hljs-built_in">console</span>.log(Stringify(data))
+    }
+  }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <p>Test mode prints more readable logs</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-keyword">if</span> (so.test) {
+    logger = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">seneca, data</span>) </span>{
+      <span class="hljs-keyword">if</span> (logrouter(data)) {
+        <span class="hljs-keyword">try</span> {
+          <span class="hljs-keyword">var</span> logstr
+          <span class="hljs-keyword">var</span> time = data.when - seneca.start_time
+
+          <span class="hljs-keyword">if</span> (<span class="hljs-string">'test'</span> === origspec || <span class="hljs-string">'print'</span> === origspec) {
+            <span class="hljs-keyword">var</span> logb = [
+              time + <span class="hljs-string">'/'</span> + seneca.id.substring(<span class="hljs-number">0</span>, <span class="hljs-number">2</span>),
+              data.kind + (data.case ? <span class="hljs-string">'/'</span> + data.case : <span class="hljs-string">''</span>)]
+
+            <span class="hljs-keyword">if</span> (<span class="hljs-string">'act'</span> === data.kind) {
+              logb.push(data.msg.meta$.id.split(<span class="hljs-string">'/'</span>).map(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">s</span>) </span>{
+                <span class="hljs-keyword">return</span> s.substring(<span class="hljs-number">0</span>, <span class="hljs-number">2</span>)
+              }).join(<span class="hljs-string">'/'</span>))
+
+              logb.push(data.msg.meta$.pattern)
+              logb.push(
+                Util
+                  .inspect(seneca.util.clean(data.result || data.msg))
+                  .replace(<span class="hljs-regexp">/\s+/g</span>, <span class="hljs-string">''</span>)
+                  .substring(<span class="hljs-number">0</span>, <span class="hljs-number">88</span>))
+
+              <span class="hljs-keyword">if</span> (<span class="hljs-string">'ERR'</span> === data.case) {
+                logb.push(<span class="hljs-string">'\n\n'</span> + data.err.stack + <span class="hljs-string">'\n'</span> + data.caller + <span class="hljs-string">'\n'</span>)
+              }
+            }
+            <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-string">'add'</span> === data.kind) {
+              logb.push(data.pattern)
+            }
+            <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-string">'plugin'</span> === data.kind) {
+              logb.push(data.plugin_name +
+                        (data.plugin_tag ? <span class="hljs-string">'/'</span> + data.plugin_tag : <span class="hljs-string">''</span>))
+            }
+            <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-string">'options'</span> === data.kind) {
+            }
+            <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-string">'notice'</span> === data.kind) {
+              logb.push(data.notice)
+            }
+            <span class="hljs-keyword">else</span> {
+              logb.push(Util.inspect(data).replace(<span class="hljs-regexp">/\n/g</span>, <span class="hljs-string">' '</span>))
+            }
+
+            logstr = logb.join(<span class="hljs-string">'\t'</span>)
+          }
+          <span class="hljs-keyword">else</span> {
+            logstr = Util.inspect(data, {<span class="hljs-attr">depth</span>: <span class="hljs-literal">null</span>})
+            logstr =
+              time + <span class="hljs-string">':\n\t'</span> +
+              logstr.replace(<span class="hljs-regexp">/\n/g</span>, <span class="hljs-string">'\n\t'</span>) +
+              <span class="hljs-string">'\n------------------------------------------------\n\n'</span>
+          }
+
+          <span class="hljs-built_in">console</span>.log(logstr)
+        }
+        <span class="hljs-keyword">catch</span> (e) {
+          <span class="hljs-built_in">console</span>.log(data)
+        }
+      }
+    }
+  }
+
+  <span class="hljs-keyword">return</span> {
+    <span class="hljs-attr">extend</span>: {
+      <span class="hljs-attr">logger</span>: logger
+    }
+  }
+}</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

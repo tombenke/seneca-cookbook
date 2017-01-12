@@ -1,0 +1,3155 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>seneca.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page_wrapper">
+            <div id="jump_page">
+              
+                
+                <a class="source" href="actions.html">
+                  actions.js
+                </a>
+              
+                
+                <a class="source" href="common.html">
+                  common.js
+                </a>
+              
+                
+                <a class="source" href="errors.html">
+                  errors.js
+                </a>
+              
+                
+                <a class="source" href="legacy.html">
+                  legacy.js
+                </a>
+              
+                
+                <a class="source" href="logging.html">
+                  logging.js
+                </a>
+              
+                
+                <a class="source" href="optioner.html">
+                  optioner.js
+                </a>
+              
+                
+                <a class="source" href="plugins.html">
+                  plugins.js
+                </a>
+              
+                
+                <a class="source" href="print.html">
+                  print.js
+                </a>
+              
+                
+                <a class="source" href="transport.html">
+                  transport.js
+                </a>
+              
+                
+                <a class="source" href="seneca.html">
+                  seneca.js
+                </a>
+              
+            </div>
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>seneca.js</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-comment">/* Copyright (c) 2010-2016 Richard Rodger and other contributors, MIT License */</span>
+<span class="hljs-meta">'use strict'</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>Node API modules.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">var</span> Assert = <span class="hljs-built_in">require</span>(<span class="hljs-string">'assert'</span>)
+<span class="hljs-keyword">var</span> Events = <span class="hljs-built_in">require</span>(<span class="hljs-string">'events'</span>)
+<span class="hljs-keyword">var</span> Util = <span class="hljs-built_in">require</span>(<span class="hljs-string">'util'</span>)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <p>External modules.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">var</span> _ = <span class="hljs-built_in">require</span>(<span class="hljs-string">'lodash'</span>)
+<span class="hljs-keyword">var</span> Eraro = <span class="hljs-built_in">require</span>(<span class="hljs-string">'eraro'</span>)
+<span class="hljs-keyword">var</span> GateExecutor = <span class="hljs-built_in">require</span>(<span class="hljs-string">'gate-executor'</span>)
+<span class="hljs-keyword">var</span> Jsonic = <span class="hljs-built_in">require</span>(<span class="hljs-string">'jsonic'</span>)
+<span class="hljs-keyword">var</span> Makeuse = <span class="hljs-built_in">require</span>(<span class="hljs-string">'use-plugin'</span>)
+<span class="hljs-keyword">var</span> Nid = <span class="hljs-built_in">require</span>(<span class="hljs-string">'nid'</span>)
+<span class="hljs-keyword">var</span> Norma = <span class="hljs-built_in">require</span>(<span class="hljs-string">'norma'</span>)
+<span class="hljs-keyword">var</span> Patrun = <span class="hljs-built_in">require</span>(<span class="hljs-string">'patrun'</span>)
+<span class="hljs-keyword">var</span> Stats = <span class="hljs-built_in">require</span>(<span class="hljs-string">'rolling-stats'</span>)
+<span class="hljs-keyword">var</span> Ordu = <span class="hljs-built_in">require</span>(<span class="hljs-string">'ordu'</span>)
+<span class="hljs-keyword">var</span> Lrucache = <span class="hljs-built_in">require</span>(<span class="hljs-string">'lru-cache'</span>)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <p>Internal modules.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">var</span> Actions = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./lib/actions'</span>)
+<span class="hljs-keyword">var</span> Common = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./lib/common'</span>)
+<span class="hljs-keyword">var</span> Errors = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./lib/errors'</span>)
+<span class="hljs-keyword">var</span> Legacy = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./lib/legacy'</span>)
+<span class="hljs-keyword">var</span> Optioner = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./lib/optioner'</span>)
+<span class="hljs-keyword">var</span> Package = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./package.json'</span>)
+<span class="hljs-keyword">var</span> Plugins = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./lib/plugins'</span>)
+<span class="hljs-keyword">var</span> Print = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./lib/print'</span>)
+<span class="hljs-keyword">var</span> Transport = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./lib/transport'</span>)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <p>Shortcuts</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">var</span> errlog = Common.make_standard_err_log_entry
+<span class="hljs-keyword">var</span> actlog = Common.make_standard_act_log_entry
+
+
+<span class="hljs-keyword">var</span> internals = {
+  <span class="hljs-attr">error</span>: Eraro({
+    <span class="hljs-attr">package</span>: <span class="hljs-string">'seneca'</span>,
+    <span class="hljs-attr">msgmap</span>: Errors,
+    <span class="hljs-attr">override</span>: <span class="hljs-literal">true</span>
+  }),
+  <span class="hljs-attr">defaults</span>: {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <p>Tag this Seneca instance, will be appended to instance identifier.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    tag: <span class="hljs-string">'-'</span>,</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              <p>Standard length of identifiers for actions.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    idlen: <span class="hljs-number">12</span>,</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-8">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
+              <p>Standard timeout for actions.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    timeout: <span class="hljs-number">22222</span>,</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-9">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-9">&#182;</a>
+              </div>
+              <p>Register (true) default plugins. Set false to not register when
+using custom versions.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    default_plugins: {
+      <span class="hljs-attr">transport</span>: <span class="hljs-literal">true</span>
+    },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-10">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-10">&#182;</a>
+              </div>
+              <p>Test mode. Use for unit testing.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    test: <span class="hljs-literal">false</span>,</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-11">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-11">&#182;</a>
+              </div>
+              <p>Debug settings.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    debug: {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-12">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-12">&#182;</a>
+              </div>
+              <p>Throw (some) errors from seneca.act.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      fragile: <span class="hljs-literal">false</span>,</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-13">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-13">&#182;</a>
+              </div>
+              <p>Fatal errors … aren’t fatal. Not for production!</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      undead: <span class="hljs-literal">false</span>,</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-14">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-14">&#182;</a>
+              </div>
+              <p>Print debug info to console</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      print: {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-15">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-15">&#182;</a>
+              </div>
+              <p>Print options. Best used via –seneca.print.options.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        options: <span class="hljs-literal">false</span>
+      },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-16">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-16">&#182;</a>
+              </div>
+              <p>Trace action caller and place in args.caller$.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      act_caller: <span class="hljs-literal">false</span>,</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-17">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-17">&#182;</a>
+              </div>
+              <p>Shorten all identifiers to 2 characters.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      short_logs: <span class="hljs-literal">false</span>,</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-18">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-18">&#182;</a>
+              </div>
+              <p>Record and log callpoints (calling code locations).</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      callpoint: <span class="hljs-literal">false</span>,</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-19">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-19">&#182;</a>
+              </div>
+              <p>Log deprecation warnings</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      deprecation: <span class="hljs-literal">true</span>
+    },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-20">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-20">&#182;</a>
+              </div>
+              <p>Enforce strict behaviours. Relax when backwards compatibility needed.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    strict: {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-21">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-21">&#182;</a>
+              </div>
+              <p>Action result must be a plain object.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      result: <span class="hljs-literal">true</span>,</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-22">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-22">&#182;</a>
+              </div>
+              <p>Delegate fixedargs override action args.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      fixedargs: <span class="hljs-literal">true</span>,</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-23">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-23">&#182;</a>
+              </div>
+              <p>Adding a pattern overrides existing pattern only if matches exactly.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      add: <span class="hljs-literal">false</span>,</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-24">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-24">&#182;</a>
+              </div>
+              <p>If no action is found and find is false,
+then no error returned along with empty object</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      find: <span class="hljs-literal">true</span>,</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-25">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-25">&#182;</a>
+              </div>
+              <p>Maximum number of times an action can call itself</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      maxloop: <span class="hljs-number">11</span>
+    },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-26">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-26">&#182;</a>
+              </div>
+              <p>Action cache. Makes inbound messages idempotent.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    actcache: {
+      <span class="hljs-attr">active</span>: <span class="hljs-literal">false</span>,
+      <span class="hljs-attr">size</span>: <span class="hljs-number">11111</span>
+    },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-27">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-27">&#182;</a>
+              </div>
+              <p>Action executor tracing. See gate-executor module.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    trace: {
+      <span class="hljs-attr">act</span>: <span class="hljs-literal">false</span>,
+      <span class="hljs-attr">stack</span>: <span class="hljs-literal">false</span>,</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-28">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-28">&#182;</a>
+              </div>
+              <p>Messages that do not match a known pattern</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      unknown: <span class="hljs-literal">true</span>,</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-29">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-29">&#182;</a>
+              </div>
+              <p>Messages that have invalid content</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      invalid: <span class="hljs-literal">false</span>
+    },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-30">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-30">&#182;</a>
+              </div>
+              <p>Action statistics settings. See rolling-stats module.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    stats: {
+      <span class="hljs-attr">size</span>: <span class="hljs-number">1024</span>,
+      <span class="hljs-attr">interval</span>: <span class="hljs-number">60000</span>,
+      <span class="hljs-attr">running</span>: <span class="hljs-literal">false</span>
+    },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-31">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-31">&#182;</a>
+              </div>
+              <p>Wait time for plugins to close gracefully.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    deathdelay: <span class="hljs-number">11111</span>,</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-32">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-32">&#182;</a>
+              </div>
+              <p>Plugin settings</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    plugin: {},</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-33">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-33">&#182;</a>
+              </div>
+              <p>System wide functionality.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    system: {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-34">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-34">&#182;</a>
+              </div>
+              <p>seneca.add uses catchall (pattern=’’) prior</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      catchall: <span class="hljs-literal">false</span>,</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-35">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-35">&#182;</a>
+              </div>
+              <p>Close instance on these signals, if true.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      close_signals: {
+        <span class="hljs-attr">SIGHUP</span>: <span class="hljs-literal">true</span>,
+        <span class="hljs-attr">SIGTERM</span>: <span class="hljs-literal">true</span>,
+        <span class="hljs-attr">SIGINT</span>: <span class="hljs-literal">true</span>,
+        <span class="hljs-attr">SIGBREAK</span>: <span class="hljs-literal">true</span>
+      }
+    },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-36">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-36">&#182;</a>
+              </div>
+              <p>Internal functionality. Reserved for objects and funtions only.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    internal: {},</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-37">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-37">&#182;</a>
+              </div>
+              <p>Log status at periodic intervals.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    status: {
+      <span class="hljs-attr">interval</span>: <span class="hljs-number">60000</span>,</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-38">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-38">&#182;</a>
+              </div>
+              <p>By default, does not run.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      running: <span class="hljs-literal">false</span>
+    },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-39">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-39">&#182;</a>
+              </div>
+              <p>backwards compatibility settings</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    legacy: {
+    }
+  }
+}</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-40">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-40">&#182;</a>
+              </div>
+              <p>Utility functions exposed by Seneca via <code>seneca.util</code>.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">var</span> seneca_util = {
+  <span class="hljs-attr">deepextend</span>: Common.deepextend,
+  <span class="hljs-attr">recurse</span>: Common.recurse,
+  <span class="hljs-attr">clean</span>: Common.clean,
+  <span class="hljs-attr">copydata</span>: Common.copydata,
+  <span class="hljs-attr">nil</span>: Common.nil,
+  <span class="hljs-attr">parsepattern</span>: Common.parsePattern,
+  <span class="hljs-attr">pattern</span>: Common.pattern,
+  <span class="hljs-attr">print</span>: Common.print,
+  <span class="hljs-attr">pincanon</span>: Common.pincanon,
+  <span class="hljs-attr">router</span>: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">router</span> (<span class="hljs-params"></span>) </span>{ <span class="hljs-keyword">return</span> Patrun() },
+  <span class="hljs-attr">argprops</span>: Common.argprops
+}</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-41">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-41">&#182;</a>
+              </div>
+              <p>Seneca is an EventEmitter.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Seneca</span> (<span class="hljs-params"></span>) </span>{
+  Events.EventEmitter.call(<span class="hljs-keyword">this</span>)
+  <span class="hljs-keyword">this</span>.setMaxListeners(<span class="hljs-number">0</span>)
+}
+Util.inherits(Seneca, Events.EventEmitter)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-42">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-42">&#182;</a>
+              </div>
+              <p>Create a Seneca instance.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-built_in">module</span>.exports = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">init</span> (<span class="hljs-params">seneca_options, more_options</span>) </span>{
+  <span class="hljs-keyword">var</span> seneca = make_seneca(_.extend({}, seneca_options, more_options))
+  <span class="hljs-keyword">var</span> options = seneca.options()
+
+  seneca.log.info({<span class="hljs-attr">kind</span>: <span class="hljs-string">'notice'</span>, <span class="hljs-attr">notice</span>: <span class="hljs-string">'hello seneca '</span> + seneca.id})</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-43">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-43">&#182;</a>
+              </div>
+              <p>The ‘internal’ key of options is reserved for objects and functions
+that provide functionality, and are thus not really printable</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  seneca.log.debug({<span class="hljs-attr">kind</span>: <span class="hljs-string">'notice'</span>, <span class="hljs-attr">options</span>: _.omit(options, [<span class="hljs-string">'internal'</span>])})
+
+  Print.print_options(options)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-44">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-44">&#182;</a>
+              </div>
+              <p>TODO: these are core API and should not be decorations</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  seneca.decorate(<span class="hljs-string">'hasplugin'</span>, Plugins.api_decorations.hasplugin)
+  seneca.decorate(<span class="hljs-string">'findplugin'</span>, Plugins.api_decorations.findplugin)
+  seneca.decorate(<span class="hljs-string">'plugins'</span>, Plugins.api_decorations.plugins)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-45">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-45">&#182;</a>
+              </div>
+              <p>Register default plugins, unless turned off by options.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-keyword">if</span> (options.default_plugins.transport) {
+    seneca.use(<span class="hljs-built_in">require</span>(<span class="hljs-string">'seneca-transport'</span>))
+  }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-46">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-46">&#182;</a>
+              </div>
+              <p>Register plugins specified in options.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  _.each(options.plugins, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">plugindesc</span>) </span>{
+    seneca.use(plugindesc)
+  })
+
+  <span class="hljs-keyword">return</span> seneca
+}</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-47">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-47">&#182;</a>
+              </div>
+              <p>Expose Seneca prototype for easier monkey-patching</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-built_in">module</span>.exports.Seneca = Seneca</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-48">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-48">&#182;</a>
+              </div>
+              <p>To reference builtin loggers when defining logging options.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-built_in">module</span>.exports.loghandler = Legacy.loghandler</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-49">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-49">&#182;</a>
+              </div>
+              <p>Makes require(‘seneca’).use(…) work by creating an on-the-fly instance.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-built_in">module</span>.exports.use = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">top_use</span> (<span class="hljs-params"></span>) </span>{
+  <span class="hljs-keyword">var</span> argsarr = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Array</span>(<span class="hljs-built_in">arguments</span>.length)
+  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> l = <span class="hljs-number">0</span>; l &lt; argsarr.length; ++l) { argsarr[l] = <span class="hljs-built_in">arguments</span>[l] }
+
+  <span class="hljs-keyword">var</span> instance = <span class="hljs-built_in">module</span>.exports()
+
+  <span class="hljs-keyword">return</span> instance.use.apply(instance, argsarr)
+}</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-50">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-50">&#182;</a>
+              </div>
+              <p>Makes require(‘seneca’).test() work.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-built_in">module</span>.exports.test = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">top_test</span> (<span class="hljs-params"></span>) </span>{
+  <span class="hljs-keyword">var</span> argsarr = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Array</span>(<span class="hljs-built_in">arguments</span>.length)
+  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> l = <span class="hljs-number">0</span>; l &lt; argsarr.length; ++l) { argsarr[l] = <span class="hljs-built_in">arguments</span>[l] }
+
+  <span class="hljs-keyword">var</span> instance = <span class="hljs-built_in">module</span>.exports({<span class="hljs-attr">test</span>: <span class="hljs-literal">true</span>, <span class="hljs-attr">log</span>: <span class="hljs-string">'test'</span>})
+  instance.test.apply(instance, argsarr)
+
+  <span class="hljs-keyword">return</span> instance
+}
+
+<span class="hljs-built_in">module</span>.exports.util = seneca_util</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-51">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-51">&#182;</a>
+              </div>
+              <p>Mostly for testing.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">if</span> (<span class="hljs-built_in">require</span>.main === <span class="hljs-built_in">module</span>) {
+  <span class="hljs-built_in">module</span>.exports()
+}</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-52">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-52">&#182;</a>
+              </div>
+              <p>Create a new Seneca instance.</p>
+<ul>
+<li>_initial<em>options</em> <code>o</code> &rarr; instance options</li>
+</ul>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">make_seneca</span> (<span class="hljs-params">initial_options</span>) </span>{
+  initial_options = initial_options || {} <span class="hljs-comment">// ensure defined</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-53">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-53">&#182;</a>
+              </div>
+              <p>Create a private context.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-keyword">var</span> private$ = make_private()</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-54">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-54">&#182;</a>
+              </div>
+              <p>Create a new root Seneca instance.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-keyword">var</span> root = <span class="hljs-keyword">new</span> Seneca()
+  root.make_log = make_log</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-55">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-55">&#182;</a>
+              </div>
+              <p>expose private for plugins</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  root.private$ = private$</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-56">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-56">&#182;</a>
+              </div>
+              <p>Create option resolver.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  private$.optioner = Optioner(
+    initial_options.module || <span class="hljs-built_in">module</span>.parent || <span class="hljs-built_in">module</span>,
+    internals.defaults)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-57">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-57">&#182;</a>
+              </div>
+              <p>Not needed after this point, and screws up debug printing.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-keyword">delete</span> initial_options.module</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-58">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-58">&#182;</a>
+              </div>
+              <p>Define options</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-keyword">var</span> so = private$.optioner.set(initial_options)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-59">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-59">&#182;</a>
+              </div>
+              <p>Create internal tools.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-keyword">var</span> actnid = Nid({<span class="hljs-attr">length</span>: so.idlen})
+  <span class="hljs-keyword">var</span> refnid = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">refnid</span> (<span class="hljs-params"></span>) </span>{ <span class="hljs-keyword">return</span> <span class="hljs-string">'('</span> + actnid() + <span class="hljs-string">')'</span> }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-60">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-60">&#182;</a>
+              </div>
+              <p>These need to come from options as required during construction.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  so.internal.actrouter = so.internal.actrouter || Patrun({ <span class="hljs-attr">gex</span>: <span class="hljs-literal">true</span> })
+  so.internal.subrouter = so.internal.subrouter || Patrun({ <span class="hljs-attr">gex</span>: <span class="hljs-literal">true</span> })
+
+  <span class="hljs-keyword">var</span> callpoint = make_callpoint(so.debug.callpoint)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-61">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-61">&#182;</a>
+              </div>
+              <p>Define public member variables.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  root.root = root
+  root.start_time = <span class="hljs-built_in">Date</span>.now()
+  root.fixedargs = {}
+  root.context = {}
+  root.version = Package.version
+
+  private$.actcache = Lrucache({ <span class="hljs-attr">max</span>: so.actcache.size })</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-62">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-62">&#182;</a>
+              </div>
+              <p>Seneca methods. Official API.</p>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-63">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-63">&#182;</a>
+              </div>
+              <p><a name="seneca.add"><strong>seneca.add</strong></a></p>
+<p>Add a message pattern and action.</p>
+<ul>
+<li><p><code>pattern</code> <small><em>string|object</em></small> &rarr;
+Pattern definition as
+<a href="https://github.com/rjrodger/jsonic">jsonic</a> string or object.</p>
+</li>
+<li><p><code>action</code> <small><em>function (optional)</em></small> &rarr;
+Action function.</p>
+</li>
+</ul>
+<p>When a message that matches the pattern is submitted inward using
+<code>seneca.act</code>, the action function is called with parameters:</p>
+<ul>
+<li><code>message</code> <small><em>object</em></small> &rarr; Message object.</li>
+<li><code>reply</code> <small><em>function</em></small> &rarr; Callback function.</li>
+</ul>
+<p>The <code>reply</code> callback is used to provide a response to the
+message.  If the action function is not provided, the pattern
+will be added with a default action function that does
+nothing. The <code>reply</code> callback has parameters:</p>
+<ul>
+<li><code>error</code> <small><em>Error (optional)</em></small> &rarr;
+Provide this value if you wish to provide an error response to the message.</li>
+<li><code>response</code> <small><em>object|array (optional)</em></small> &rarr;
+Response data to the message.</li>
+</ul>
+<p><strong>The action function is not a lambda, and the <code>=&gt;</code> function
+syntax should not be used.</strong> The context <code>this</code> of the action
+function is a reference to the current Seneca instance, tha
+should always be used for subsequent <code>seneca.act</code> calls, as this
+enables accurate tracing of actions.</p>
+<p>If the pattern added has been added previously, then the new
+action function overrides the old action function. The old action
+function is available via the <code>seneca.prior</code> method of the
+current Seneca instance (<code>this</code> in the new action function).  A
+chain of priors is formed if additional action functions with the
+same pattern are added. There is a tutorial on <a href="http://senecajs.org/tutorials/priors.html">Seneca
+priors</a>.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  root.add = api_add</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-64">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-64">&#182;</a>
+              </div>
+              <h1 id="seneca-act">Seneca.act</h1>
+<p>Send a message. If the message matches a pattern, execute the
+action function.</p>
+<ul>
+<li><code>msg</code> <small><em>object</em></small> &rarr;
+The message data. Only data that can be fully represented as JSON is valid.</li>
+<li><code>callback</code> <small><em>function (optional)</em></small> &rarr;
+The callback function that will receive the response to the
+message, generated by the action function.</li>
+</ul>
+<p>The message data may contain control properties, indicated by a
+<code>$</code> suffix.  These are described in the <a href="http://senecajs.org/documentation/control-properties.html">control properties
+reference</a></p>
+<p><strong>The callback function should not be a lambda (<code>=&gt;</code>)</strong>. The current
+Seneca instance is provided via <code>this</code>, and should be used for
+subsequent <code>seneca.act</code> calls, as this enables accurate tracing
+of actions.</p>
+<p>If the callback function is provided, then the message
+interaction is assumed to be synchronous, and a response from the
+action function will be expected. If the callback function is not
+provided, the interaction is assumed to be asynchronous, and no
+response is expected.</p>
+<p>The callback function has parameters:</p>
+<ul>
+<li><code>error</code> <small><em>Error</em></small> &rarr; If an error occurred,
+an Error object will be provided, otherwise this is <code>null</code>. If
+the action times out, an error will be provided.</li>
+<li><code>response</code> <small><em>object|array</em></small> &rarr;
+The response data from the action function, if any.</li>
+</ul>
+<p>For convenience, you can build the full message from separate
+parts, including <a href="https://github.com/rjrodger/jsonic">jsonic</a>
+strings. The full set of parameters to <code>seneca.act</code> is:</p>
+<ul>
+<li><code>jsonic</code> <small><em>string (optional)</em></small> &rarr;
+Message properties in jsonic format. These have precedence over
+other message parts.</li>
+<li><code>part1</code> <small><em>object (optional)</em></small> &rarr;
+Message data having precedence over <code>part2</code>.</li>
+<li><code>part2</code> <small><em>object (optional)</em></small> &rarr;
+Message data.</li>
+<li><code>callback</code> <small><em>function (optional)</em></small> &rarr;
+As previously described.</li>
+</ul>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  root.act = api_act <span class="hljs-comment">// Perform action that matches pattern.</span>
+
+  root.sub = api_sub <span class="hljs-comment">// Subscribe to a message pattern.</span>
+  root.use = api_use <span class="hljs-comment">// Define a plugin.</span>
+  root.listen = Transport.listen(callpoint) <span class="hljs-comment">// Listen for inbound messages.</span>
+  root.client = Transport.client(callpoint) <span class="hljs-comment">// Send outbound messages.</span>
+  root.export = api_export <span class="hljs-comment">// Export plain objects from a plugin.</span>
+  root.has = Actions.has <span class="hljs-comment">// True if action pattern defined.</span>
+  root.find = Actions.find <span class="hljs-comment">// Find action by pattern</span>
+  root.list = Actions.list <span class="hljs-comment">// List (a subset of) action patterns.</span>
+  root.ready = api_ready <span class="hljs-comment">// Callback when plugins initialized.</span>
+  root.close = api_close <span class="hljs-comment">// Close and shutdown plugins.</span>
+  root.options = api_options <span class="hljs-comment">// Get and set options.</span>
+  root.error = api_error <span class="hljs-comment">// Set global error handler.</span>
+  root.decorate = api_decorate <span class="hljs-comment">// Decorate seneca object with functions</span>
+  root.inward = api_inward <span class="hljs-comment">// Add a modifier function for messages inward</span>
+  root.outward = api_outward <span class="hljs-comment">// Add a modifier function for responses outward</span>
+  root.test = api_test <span class="hljs-comment">// Set test mode.</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-65">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-65">&#182;</a>
+              </div>
+              <p>Method aliases.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  root.hasact = root.has</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-66">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-66">&#182;</a>
+              </div>
+              <p>Non-API methods.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  root.register = Plugins.register(so, callpoint)
+  root.depends = api_depends
+  root.act_if = api_act_if
+  root.wrap = api_wrap
+  root.seneca = api_seneca
+  root.fix = api_fix
+  root.delegate = api_delegate</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-67">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-67">&#182;</a>
+              </div>
+              <p>Legacy API; Deprecated.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  root.findact = root.find</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-68">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-68">&#182;</a>
+              </div>
+              <p>DEPRECATED</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  root.fail = Legacy.fail(so)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-69">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-69">&#182;</a>
+              </div>
+              <p>Identifier generator.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  root.idgen = Nid({<span class="hljs-attr">length</span>: so.idlen})
+  so.tag = so.tag || internals.defaults.tag
+  so.tag = so.tag === <span class="hljs-string">'undefined'</span> ? internals.defaults.tag : so.tag</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-70">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-70">&#182;</a>
+              </div>
+              <p>Create a unique identifer for this instance.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  root.id = root.idgen() +
+    <span class="hljs-string">'/'</span> +
+    root.start_time +
+    <span class="hljs-string">'/'</span> +
+    process.pid +
+    <span class="hljs-string">'/'</span> +
+    root.version +
+    <span class="hljs-string">'/'</span> +
+    so.tag
+
+  <span class="hljs-keyword">if</span> (so.debug.short_logs || so.log.short) {
+    so.idlen = <span class="hljs-number">2</span>
+    root.idgen = Nid({<span class="hljs-attr">length</span>: so.idlen})
+    root.id = root.idgen() + <span class="hljs-string">'/'</span> + so.tag
+  }
+
+  root.fullname = <span class="hljs-string">'Seneca/'</span> + root.id
+
+  root.die = Common.makedie(root, {
+    <span class="hljs-attr">type</span>: <span class="hljs-string">'sys'</span>,
+    <span class="hljs-attr">plugin</span>: <span class="hljs-string">'seneca'</span>,
+    <span class="hljs-attr">tag</span>: root.version,
+    <span class="hljs-attr">id</span>: root.id,
+    <span class="hljs-attr">callpoint</span>: callpoint
+  })
+
+  root.util = seneca_util</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-71">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-71">&#182;</a>
+              </div>
+              <p>Configure logging</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  private$.exports = { <span class="hljs-attr">options</span>: Common.deepextend({}, so) }
+  private$.decorations = {}
+
+  private$.logger = load_logger(root, so.internal.logger)
+  root.log = make_log(root, default_log_modifier)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-72">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-72">&#182;</a>
+              </div>
+              <p>Error events are fatal, unless you’re undead.  These are not the
+same as action errors, these are unexpected internal issues.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  root.on(<span class="hljs-string">'error'</span>, root.die)
+
+  private$.ge =
+    GateExecutor({
+      <span class="hljs-attr">timeout</span>: so.timeout
+    })
+    .clear(action_queue_clear)
+    .start()</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-73">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-73">&#182;</a>
+              </div>
+              <p>setup status log</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-keyword">if</span> (so.status.interval &gt; <span class="hljs-number">0</span> &amp;&amp; so.status.running) {
+    private$.stats = private$.stats || {}
+    setInterval(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">status</span> (<span class="hljs-params"></span>) </span>{
+      root.log.info({
+        <span class="hljs-attr">kind</span>: <span class="hljs-string">'status'</span>,
+        <span class="hljs-attr">alive</span>: (<span class="hljs-built_in">Date</span>.now() - private$.stats.start),
+        <span class="hljs-attr">act</span>: private$.stats.act
+      })
+    }, so.status.interval)
+  }
+
+  <span class="hljs-keyword">if</span> (so.stats) {
+    private$.timestats = <span class="hljs-keyword">new</span> Stats.NamedStats(so.stats.size, so.stats.interval)
+
+    <span class="hljs-keyword">if</span> (so.stats.running) {
+      setInterval(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">stats</span> (<span class="hljs-params"></span>) </span>{
+        private$.timestats.calculate()
+      }, so.stats.interval)
+    }
+  }
+
+  private$.plugins = {}
+  private$.plugin_order = { <span class="hljs-attr">byname</span>: [], <span class="hljs-attr">byref</span>: [] }
+  private$.use = Makeuse({
+    <span class="hljs-attr">prefix</span>: <span class="hljs-string">'seneca-'</span>,
+    <span class="hljs-attr">module</span>: <span class="hljs-built_in">module</span>,
+    <span class="hljs-attr">msgprefix</span>: <span class="hljs-literal">false</span>,
+    <span class="hljs-attr">builtin</span>: <span class="hljs-string">''</span>
+  })
+
+  private$.actrouter = so.internal.actrouter
+  private$.subrouter = so.internal.subrouter
+
+  root.toString = api_toString
+
+  private$.action_modifiers = []
+  private$.ready_list = []
+
+
+  private$.inward = Ordu({<span class="hljs-attr">name</span>: <span class="hljs-string">'inward'</span>})
+    .add(Actions.inward.closed)
+    .add(Actions.inward.resolve_msg_id)
+    .add(Actions.inward.act_cache)
+    .add(Actions.inward.act_default)
+    .add(Actions.inward.act_not_found)
+    .add(Actions.inward.act_stats)
+    .add(Actions.inward.validate_msg)
+    .add(Actions.inward.warnings)
+    .add({<span class="hljs-attr">tags</span>: [<span class="hljs-string">'prior'</span>]}, Actions.inward.msg_meta)
+    .add({<span class="hljs-attr">tags</span>: [<span class="hljs-string">'xprior'</span>]}, Actions.inward.prepare_delegate)
+    .add(Actions.inward.msg_modify)
+    .add(Actions.inward.announce)
+
+  private$.outward = Ordu({<span class="hljs-attr">name</span>: <span class="hljs-string">'outward'</span>})
+    .add(Actions.outward.act_stats)
+    .add(Actions.outward.act_cache)
+    .add(Actions.outward.res_object)
+
+
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">api_depends</span> (<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>
+
+    <span class="hljs-keyword">var</span> args = Norma(<span class="hljs-string">'{pluginname:s deps:a? moredeps:s*}'</span>, <span class="hljs-built_in">arguments</span>)
+
+    <span class="hljs-keyword">var</span> deps = args.deps || args.moredeps
+
+    _.every(deps, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">depname</span>) </span>{
+      <span class="hljs-keyword">if</span> (!_.includes(private$.plugin_order.byname, depname) &amp;&amp;
+        !_.includes(private$.plugin_order.byname, <span class="hljs-string">'seneca-'</span> + depname)) {
+        self.die(internals.error(<span class="hljs-string">'plugin_required'</span>, { <span class="hljs-attr">name</span>: args.pluginname, <span class="hljs-attr">dependency</span>: depname }))
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>
+      }
+      <span class="hljs-keyword">else</span> <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>
+    })
+  }
+
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">api_export</span> (<span class="hljs-params">key</span>) </span>{
+    <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-74">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-74">&#182;</a>
+              </div>
+              <p>Legacy aliases</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">if</span> (key === <span class="hljs-string">'util'</span>) {
+      key = <span class="hljs-string">'basic'</span>
+    }
+
+    <span class="hljs-keyword">var</span> exportval = private$.exports[key]
+    <span class="hljs-keyword">if</span> (!exportval) {
+      <span class="hljs-keyword">return</span> self.die(internals.error(<span class="hljs-string">'export_not_found'</span>, {<span class="hljs-attr">key</span>: key}))
+    }
+
+    <span class="hljs-keyword">return</span> exportval
+  }
+
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">api_sub</span> (<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>
+
+    <span class="hljs-keyword">var</span> subargs = Common.parsePattern(self, <span class="hljs-built_in">arguments</span>, <span class="hljs-string">'action:f actmeta:o?'</span>)
+    <span class="hljs-keyword">var</span> pattern = subargs.pattern
+    <span class="hljs-keyword">if</span> (pattern.in$ == <span class="hljs-literal">null</span> &amp;&amp;
+      pattern.out$ == <span class="hljs-literal">null</span> &amp;&amp;
+      pattern.error$ == <span class="hljs-literal">null</span> &amp;&amp;
+      pattern.cache$ == <span class="hljs-literal">null</span> &amp;&amp;
+      pattern.default$ == <span class="hljs-literal">null</span> &amp;&amp;
+      pattern.client$ == <span class="hljs-literal">null</span>) {
+      pattern.in$ = <span class="hljs-literal">true</span>
+    }
+
+    <span class="hljs-keyword">if</span> (!private$.handle_sub) {
+      private$.handle_sub = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">handle_sub</span> (<span class="hljs-params">args, result</span>) </span>{
+        args.meta$ = args.meta$ || {}
+
+        <span class="hljs-keyword">if</span> (!args.meta$.prior || !args.meta$.prior.entry) {
+          <span class="hljs-keyword">return</span>
+        }
+
+        <span class="hljs-keyword">var</span> subfuncs = private$.subrouter.find(args)
+
+        <span class="hljs-keyword">if</span> (subfuncs) {
+          args.meta$.sub = subfuncs.pattern
+
+          _.each(subfuncs, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">subfunc</span> (<span class="hljs-params">subfunc</span>) </span>{
+            <span class="hljs-keyword">try</span> {
+              subfunc.call(self, args, result)
+            }
+            <span class="hljs-keyword">catch</span> (ex) {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-75">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-75">&#182;</a>
+              </div>
+              <p>TODO: not really satisfactory</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>              <span class="hljs-keyword">var</span> err = internals.error(ex, <span class="hljs-string">'sub_function_catch'</span>, { <span class="hljs-attr">args</span>: args, <span class="hljs-attr">result</span>: result })
+              self.log.error(errlog(err, {
+                <span class="hljs-attr">kind</span>: <span class="hljs-string">'sub'</span>,
+                <span class="hljs-attr">msg</span>: args,
+                <span class="hljs-attr">actid</span>: args.meta$.id
+              }))
+            }
+          })
+        }
+      }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-76">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-76">&#182;</a>
+              </div>
+              <p>TODO: other cases</p>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-77">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-77">&#182;</a>
+              </div>
+              <p>Subs are triggered via events</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      self.on(<span class="hljs-string">'act-in'</span>, annotate(<span class="hljs-string">'in$'</span>, private$.handle_sub))
+      self.on(<span class="hljs-string">'act-out'</span>, annotate(<span class="hljs-string">'out$'</span>, private$.handle_sub))
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">annotate</span> (<span class="hljs-params">prop, handle_sub</span>) </span>{
+      <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">annotation</span> (<span class="hljs-params">args, result</span>) </span>{
+        args = _.clone(args)
+        result = _.clone(result)
+        args[prop] = <span class="hljs-literal">true</span>
+        handle_sub(args, result)
+      }
+    }
+
+    <span class="hljs-keyword">var</span> subs = private$.subrouter.find(pattern)
+    <span class="hljs-keyword">if</span> (!subs) {
+      private$.subrouter.add(pattern, subs = [])
+      subs.pattern = Common.pattern(pattern)
+    }
+    subs.push(subargs.action)
+
+    <span class="hljs-keyword">return</span> self
+  }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-78">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-78">&#182;</a>
+              </div>
+              <p>See <a href="#seneca.add"><code>seneca.add</code></a></p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">api_add</span> (<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>
+    <span class="hljs-keyword">var</span> args = Common.parsePattern(self, <span class="hljs-built_in">arguments</span>, <span class="hljs-string">'action:f? actmeta:o?'</span>)
+
+    <span class="hljs-keyword">var</span> raw_pattern = args.pattern
+
+    <span class="hljs-keyword">var</span> pattern = self.util.clean(raw_pattern)
+
+    <span class="hljs-keyword">if</span> (!_.keys(pattern)) {
+      <span class="hljs-keyword">throw</span> internals.error(<span class="hljs-string">'add_empty_pattern'</span>, {<span class="hljs-attr">args</span>: Common.clean(args)})
+    }
+
+
+    <span class="hljs-keyword">var</span> action = args.action || <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">default_action</span> (<span class="hljs-params">msg, done</span>) </span>{
+      done.call(<span class="hljs-keyword">this</span>, <span class="hljs-literal">null</span>, msg.default$ || <span class="hljs-literal">null</span>)
+    }
+
+    <span class="hljs-keyword">var</span> actmeta = args.actmeta || {}
+
+    actmeta.raw = _.cloneDeep(raw_pattern)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-79">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-79">&#182;</a>
+              </div>
+              <p>TODO: refactor plugin name, tag and fullname handling.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    actmeta.plugin_name = actmeta.plugin_name || <span class="hljs-string">'root$'</span>
+    actmeta.plugin_fullname = actmeta.plugin_fullname ||
+      actmeta.plugin_name +
+      ((actmeta.plugin_tag === <span class="hljs-string">'-'</span> ? <span class="hljs-keyword">void</span> <span class="hljs-number">0</span> : actmeta.plugin_tag)
+       ? <span class="hljs-string">'/'</span> + actmeta.plugin_tag : <span class="hljs-string">''</span>)
+
+    <span class="hljs-keyword">var</span> add_callpoint = callpoint()
+    <span class="hljs-keyword">if</span> (add_callpoint) {
+      actmeta.callpoint = add_callpoint
+    }
+
+    actmeta.sub = !!raw_pattern.sub$
+    actmeta.client = !!raw_pattern.client$</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-80">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-80">&#182;</a>
+              </div>
+              <p>Deprecate a pattern by providing a string message using deprecate$ key.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    actmeta.deprecate = raw_pattern.deprecate$
+
+    <span class="hljs-keyword">var</span> strict_add = (raw_pattern.strict$ &amp;&amp; raw_pattern.strict$.add !== <span class="hljs-literal">null</span>)
+      ? !!raw_pattern.strict$.add : !!so.strict.add
+
+    <span class="hljs-keyword">var</span> internal_catchall = (raw_pattern.internal$ &amp;&amp; raw_pattern.internal$.catchall !== <span class="hljs-literal">null</span>)
+      ? !!raw_pattern.internal$.catchall : !!so.internal.catchall
+
+    <span class="hljs-keyword">var</span> pattern_rules = _.clone(action.validate || {})
+    _.each(pattern, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">v, k</span>) </span>{
+      <span class="hljs-keyword">if</span> (_.isObject(v)) {
+        pattern_rules[k] = _.clone(v)
+        <span class="hljs-keyword">delete</span> pattern[k]
+      }
+    })
+
+    <span class="hljs-keyword">var</span> addroute = <span class="hljs-literal">true</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-81">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-81">&#182;</a>
+              </div>
+              <p>TODO: deprecate</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    actmeta.args = _.clone(pattern)
+
+    actmeta.rules = pattern_rules
+
+    actmeta.id = refnid()
+    actmeta.func = action</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-82">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-82">&#182;</a>
+              </div>
+              <p>Canonical string form of the action pattern.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    actmeta.pattern = Common.pattern(pattern)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-83">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-83">&#182;</a>
+              </div>
+              <p>Canonical object form of the action pattern.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    actmeta.msgcanon = Jsonic(actmeta.pattern)
+
+
+    <span class="hljs-keyword">var</span> priormeta = self.find(pattern)
+
+    <span class="hljs-keyword">if</span> (priormeta) {
+      <span class="hljs-keyword">if</span> (!internal_catchall &amp;&amp; <span class="hljs-string">''</span> === priormeta.pattern) {
+        priormeta = <span class="hljs-literal">null</span>
+      }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-84">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-84">&#182;</a>
+              </div>
+              <p>only exact action patterns are overridden
+use .wrap for pin-based patterns</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (strict_add &amp;&amp; priormeta.pattern !== actmeta.pattern) {
+        priormeta = <span class="hljs-literal">null</span>
+      }
+    }
+
+    <span class="hljs-keyword">if</span> (priormeta) {
+      <span class="hljs-keyword">if</span> (_.isFunction(priormeta.handle)) {
+        priormeta.handle(args.pattern, action)
+        addroute = <span class="hljs-literal">false</span>
+      }
+      <span class="hljs-keyword">else</span> {
+        actmeta.priormeta = priormeta
+      }
+      actmeta.priorpath = priormeta.id + <span class="hljs-string">';'</span> + priormeta.priorpath
+    }
+    <span class="hljs-keyword">else</span> {
+      actmeta.priorpath = <span class="hljs-string">''</span>
+    }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-85">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-85">&#182;</a>
+              </div>
+              <p>FIX: need a much better way to support layered actions
+this “.handle” hack is just to make seneca.close work</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">if</span> (action &amp;&amp; actmeta &amp;&amp; _.isFunction(action.handle)) {
+      actmeta.handle = action.handle
+    }
+
+    private$.stats.actmap[actmeta.pattern] =
+      private$.stats.actmap[actmeta.pattern] || make_action_stats(actmeta)
+
+    actmeta = modify_action(self, actmeta)
+
+    <span class="hljs-keyword">if</span> (addroute) {
+      self.log.debug({
+        <span class="hljs-attr">kind</span>: <span class="hljs-string">'add'</span>,
+        <span class="hljs-attr">case</span>: actmeta.sub ? <span class="hljs-string">'SUB'</span> : <span class="hljs-string">'ADD'</span>,
+        <span class="hljs-attr">id</span>: actmeta.id,
+        <span class="hljs-attr">pattern</span>: actmeta.pattern,
+        <span class="hljs-attr">name</span>: action.name,
+        <span class="hljs-attr">callpoint</span>: callpoint
+      })
+
+      private$.actrouter.add(pattern, actmeta)
+    }
+
+    <span class="hljs-keyword">return</span> self
+  }
+
+
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">make_action_stats</span> (<span class="hljs-params">actmeta</span>) </span>{
+    <span class="hljs-keyword">return</span> {
+      <span class="hljs-attr">id</span>: actmeta.id,
+      <span class="hljs-attr">plugin</span>: {
+        <span class="hljs-attr">full</span>: actmeta.plugin_fullname,
+        <span class="hljs-attr">name</span>: actmeta.plugin_name,
+        <span class="hljs-attr">tag</span>: actmeta.plugin_tag
+      },
+      <span class="hljs-attr">prior</span>: actmeta.priorpath,
+      <span class="hljs-attr">calls</span>: <span class="hljs-number">0</span>,
+      <span class="hljs-attr">done</span>: <span class="hljs-number">0</span>,
+      <span class="hljs-attr">fails</span>: <span class="hljs-number">0</span>,
+      <span class="hljs-attr">time</span>: {}
+    }
+  }
+
+
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">modify_action</span> (<span class="hljs-params">seneca, actmeta</span>) </span>{
+    _.each(private$.action_modifiers, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">actmod</span>) </span>{
+      actmeta = actmod.call(seneca, actmeta)
+    })
+
+    <span class="hljs-keyword">return</span> actmeta
+  }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-86">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-86">&#182;</a>
+              </div>
+              <p>TODO: deprecate</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  root.findpins = root.pinact = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">findpins</span> (<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">var</span> argsarr = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Array</span>(<span class="hljs-built_in">arguments</span>.length)
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> l = <span class="hljs-number">0</span>; l &lt; argsarr.length; ++l) { argsarr[l] = <span class="hljs-built_in">arguments</span>[l] }
+
+    <span class="hljs-keyword">var</span> pins = []
+    <span class="hljs-keyword">var</span> patterns = _.flatten(argsarr)
+
+    _.each(patterns, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">pattern</span>) </span>{
+      pattern = _.isString(pattern) ? Jsonic(pattern) : pattern
+      pins = pins.concat(_.map(private$.actrouter.list(pattern),
+        <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">desc</span>) </span>{
+          <span class="hljs-keyword">return</span> desc.match
+        }
+      ))
+    })
+
+    <span class="hljs-keyword">return</span> pins
+  }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-87">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-87">&#182;</a>
+              </div>
+              <p>DEPRECATED</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">api_act_if</span> (<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>
+    <span class="hljs-keyword">var</span> args = Norma(<span class="hljs-string">'{execute:b actargs:.*}'</span>, <span class="hljs-built_in">arguments</span>)
+
+    <span class="hljs-keyword">if</span> (args.execute) {
+      <span class="hljs-keyword">return</span> self.act.apply(self, args.actargs)
+    }
+    <span class="hljs-keyword">else</span> <span class="hljs-keyword">return</span> self
+  }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-88">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-88">&#182;</a>
+              </div>
+              <p>Perform an action. The properties of the first argument are matched against
+known patterns, and the most specific one wins.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">api_act</span> (<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">var</span> argsarr = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Array</span>(<span class="hljs-built_in">arguments</span>.length)
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> l = <span class="hljs-number">0</span>; l &lt; argsarr.length; ++l) { argsarr[l] = <span class="hljs-built_in">arguments</span>[l] }
+
+    <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>
+    <span class="hljs-keyword">var</span> spec = Common.parsePattern(self, argsarr, <span class="hljs-string">'done:f?'</span>)
+    <span class="hljs-keyword">var</span> msg = _.extend(spec.pattern, self.fixedargs)
+    <span class="hljs-keyword">var</span> actdone = spec.done
+
+    <span class="hljs-keyword">if</span> (so.debug.act_caller || so.test) {
+      msg.caller$ = <span class="hljs-string">'\n    Action call arguments and location: '</span> +
+        (<span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(Util.inspect(msg).replace(<span class="hljs-regexp">/\n/g</span>, <span class="hljs-string">''</span>)).stack)
+          .replace(<span class="hljs-regexp">/.*\/seneca\.js:.*\n/g</span>, <span class="hljs-string">''</span>)
+          .replace(<span class="hljs-regexp">/.*\/seneca\/lib\/.*\.js:.*\n/g</span>, <span class="hljs-string">''</span>)
+    }
+
+    do_act(self, msg, actdone)
+    <span class="hljs-keyword">return</span> self
+  }
+
+
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">api_wrap</span> (<span class="hljs-params">pin, meta, wrapper</span>) </span>{
+    <span class="hljs-keyword">var</span> pinthis = <span class="hljs-keyword">this</span>
+
+    wrapper = _.isFunction(meta) ? meta : wrapper
+    meta = _.isFunction(meta) ? {} : meta
+
+    pin = _.isArray(pin) ? pin : [pin]
+    _.each(pin, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">p</span>) </span>{
+      _.each(pinthis.findpins(p), <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">actpattern</span>) </span>{
+        pinthis.add(actpattern, meta, wrapper)
+      })
+    })
+  }
+
+  <span class="hljs-keyword">var</span> handleClose = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+    root.close(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">err</span>) </span>{
+      <span class="hljs-keyword">if</span> (err) {
+        Common.console_error(err)
+      }
+
+      process.exit(err ? (err.exit === <span class="hljs-literal">null</span> ? <span class="hljs-number">1</span> : err.exit) : <span class="hljs-number">0</span>)
+    })
+  }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-89">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-89">&#182;</a>
+              </div>
+              <p>close seneca instance
+sets public seneca.closed property</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">api_close</span> (<span class="hljs-params">done</span>) </span>{
+    <span class="hljs-keyword">var</span> seneca = <span class="hljs-keyword">this</span>
+
+    seneca.ready(do_close)
+
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">do_close</span> (<span class="hljs-params"></span>) </span>{
+      seneca.closed = <span class="hljs-literal">true</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-90">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-90">&#182;</a>
+              </div>
+              <p>cleanup process event listeners</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      _.each(so.internal.close_signals, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">active, signal</span>) </span>{
+        <span class="hljs-keyword">if</span> (active) {
+          process.removeListener(signal, handleClose)
+        }
+      })
+
+      seneca.log.debug({<span class="hljs-attr">kind</span>: <span class="hljs-string">'close'</span>, <span class="hljs-attr">notice</span>: <span class="hljs-string">'start'</span>, <span class="hljs-attr">callpoint</span>: callpoint()})
+      seneca.act(<span class="hljs-string">'role:seneca,cmd:close,closing$:true'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">err</span>) </span>{
+        seneca.log.debug(errlog(
+          err, {<span class="hljs-attr">kind</span>: <span class="hljs-string">'close'</span>, <span class="hljs-attr">notice</span>: <span class="hljs-string">'end'</span>}))
+
+        seneca.removeAllListeners(<span class="hljs-string">'act-in'</span>)
+        seneca.removeAllListeners(<span class="hljs-string">'act-out'</span>)
+        seneca.removeAllListeners(<span class="hljs-string">'act-err'</span>)
+        seneca.removeAllListeners(<span class="hljs-string">'pin'</span>)
+        seneca.removeAllListeners(<span class="hljs-string">'after-pin'</span>)
+        seneca.removeAllListeners(<span class="hljs-string">'ready'</span>)
+
+        <span class="hljs-keyword">if</span> (_.isFunction(done)) {
+          <span class="hljs-keyword">return</span> done.call(seneca, err)
+        }
+      })
+    }
+  }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-91">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-91">&#182;</a>
+              </div>
+              <p>useful when defining services!
+note: has EventEmitter.once semantics
+if using .on(‘ready’,fn) it will be be called for each ready event</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">api_ready</span> (<span class="hljs-params">ready</span>) </span>{
+    <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>
+
+    setImmediate(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">register_ready</span> (<span class="hljs-params"></span>) </span>{
+      <span class="hljs-keyword">if</span> (root.private$.ge.isclear()) {
+        ready.call(self)
+      }
+      <span class="hljs-keyword">else</span> {
+        root.private$.ready_list.push(ready.bind(self))
+      }
+    })
+
+    <span class="hljs-keyword">return</span> self
+  }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-92">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-92">&#182;</a>
+              </div>
+              <p>use(‘pluginname’) - built-in, or provide calling code ‘require’ as seneca opt
+use(require(‘pluginname’)) - plugin object, init will be called
+if first arg has property senecaplugin</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">api_use</span> (<span class="hljs-params">arg0, arg1, arg2</span>) </span>{
+    <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>
+    <span class="hljs-keyword">var</span> plugindesc</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-93">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-93">&#182;</a>
+              </div>
+              <p>Allow chaining with seneca.use(‘options’, {…})
+see <a href="https://github.com/rjrodger/seneca/issues/80">https://github.com/rjrodger/seneca/issues/80</a></p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">if</span> (arg0 === <span class="hljs-string">'options'</span>) {
+      self.options(arg1)
+      <span class="hljs-keyword">return</span> self
+    }
+
+    <span class="hljs-keyword">try</span> {
+      plugindesc = private$.use(arg0, arg1, arg2)
+    }
+    <span class="hljs-keyword">catch</span> (e) {
+      self.die(internals.error(e, <span class="hljs-string">'plugin_'</span> + e.code))
+      <span class="hljs-keyword">return</span> self
+    }
+
+    self.register(plugindesc)
+
+    <span class="hljs-keyword">return</span> self
+  }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-94">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-94">&#182;</a>
+              </div>
+              <p>Return self. Mostly useful as a check that this is a Seneca instance.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">api_seneca</span> (<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>
+  }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-95">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-95">&#182;</a>
+              </div>
+              <p>Describe this instance using the form: Seneca/VERSION/ID</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">api_toString</span> (<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.fullname
+  }
+
+
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">api_inward</span> (<span class="hljs-params">inward</span>) </span>{
+    Assert(<span class="hljs-string">'function'</span> === <span class="hljs-keyword">typeof</span> inward)
+    Assert(<span class="hljs-number">2</span> === inward.length)
+
+    private$.inward.add(inward)
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>
+  }
+
+
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">api_outward</span> (<span class="hljs-params">outward</span>) </span>{
+    Assert(<span class="hljs-string">'function'</span> === <span class="hljs-keyword">typeof</span> outward)
+    Assert(<span class="hljs-number">2</span> === outward.length)
+
+    private$.outward.add(outward)
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>
+  }
+
+
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">do_act</span> (<span class="hljs-params">instance, origmsg, actdone</span>) </span>{
+    <span class="hljs-keyword">var</span> actstart = <span class="hljs-built_in">Date</span>.now()
+    <span class="hljs-keyword">var</span> msg = _.clone(origmsg)
+    <span class="hljs-keyword">var</span> act_callpoint = callpoint()
+    <span class="hljs-keyword">var</span> is_sync = _.isFunction(actdone)
+    <span class="hljs-keyword">var</span> execute_instance = instance
+
+    actdone = actdone || _.noop
+
+    <span class="hljs-keyword">if</span> (msg.gate$) {
+      execute_instance = instance.delegate()
+      execute_instance.private$.ge =
+        execute_instance.private$.ge.gate()
+    }
+
+    <span class="hljs-keyword">var</span> execspec = {
+      <span class="hljs-attr">fn</span>: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">act_fn</span> (<span class="hljs-params">done</span>) </span>{
+        <span class="hljs-keyword">try</span> {
+          execute_action(execute_instance, msg, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">reply</span> (<span class="hljs-params"></span>) </span>{
+            handle_result.apply(<span class="hljs-keyword">this</span>, <span class="hljs-built_in">arguments</span>)
+            done()
+          })
+        }
+        <span class="hljs-keyword">catch</span> (e) {
+          handle_result.call(execute_instance, e)
+          done()
+        }
+      },
+      <span class="hljs-attr">ontm</span>: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">act_tm</span> (<span class="hljs-params">done</span>) </span>{
+        handle_result.call(execute_instance, <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">'[TIMEOUT]'</span>))
+      },
+      <span class="hljs-attr">tm</span>: <span class="hljs-string">'number'</span> === <span class="hljs-keyword">typeof</span> msg.timeout$ ? msg.timeout$ : <span class="hljs-literal">null</span>
+    }
+
+    execute_instance.private$.ge.add(execspec)
+
+
+    <span class="hljs-keyword">var</span> action_ctxt = {}
+
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">execute_action</span> (<span class="hljs-params">act_instance, msg, reply</span>) </span>{
+      <span class="hljs-keyword">var</span> actmeta = act_instance.find(msg, {<span class="hljs-attr">catchall</span>: so.internal.catchall})
+
+      msg.meta$ = msg.meta$ || {}
+      <span class="hljs-keyword">var</span> delegate = act_make_delegate(act_instance, msg, actmeta)
+
+      action_ctxt.start = actstart
+      action_ctxt.sync = is_sync
+      action_ctxt.seneca = delegate
+      action_ctxt.actmeta = actmeta
+      action_ctxt.options = delegate.options()
+      action_ctxt.callpoint = act_callpoint
+
+      <span class="hljs-keyword">var</span> data = {<span class="hljs-attr">msg</span>: msg, <span class="hljs-attr">reply</span>: reply}
+      <span class="hljs-keyword">var</span> inward = private$.inward.process(action_ctxt, data)
+
+      <span class="hljs-keyword">if</span> (handle_inward_break(inward, act_instance, data, actmeta, origmsg)) {
+        <span class="hljs-keyword">return</span>
+      }
+
+      <span class="hljs-keyword">if</span> (!actmeta.sub) {
+        delegate.log.debug(actlog(
+          actmeta, msg, origmsg,
+          { <span class="hljs-attr">kind</span>: <span class="hljs-string">'act'</span>, <span class="hljs-attr">case</span>: <span class="hljs-string">'IN'</span> }))
+      }
+
+      actmeta.func.call(delegate, data.msg, data.reply)
+    }
+
+
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">handle_result</span> (<span class="hljs-params"></span>) </span>{
+      <span class="hljs-keyword">var</span> argsarr = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Array</span>(<span class="hljs-built_in">arguments</span>.length)
+      <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> l = <span class="hljs-number">0</span>; l &lt; argsarr.length; ++l) { argsarr[l] = <span class="hljs-built_in">arguments</span>[l] }
+
+      <span class="hljs-keyword">var</span> actmeta = action_ctxt.actmeta
+      <span class="hljs-keyword">var</span> delegate = <span class="hljs-keyword">this</span> || instance
+
+      <span class="hljs-keyword">var</span> actend = <span class="hljs-built_in">Date</span>.now()
+      action_ctxt.duration = actend - action_ctxt.start
+
+      <span class="hljs-keyword">var</span> call_cb = <span class="hljs-literal">true</span>
+
+      <span class="hljs-keyword">var</span> data = {
+        <span class="hljs-attr">msg</span>: msg,
+        <span class="hljs-attr">err</span>: argsarr[<span class="hljs-number">0</span>],
+        <span class="hljs-attr">res</span>: argsarr[<span class="hljs-number">1</span>]
+      }
+
+      <span class="hljs-keyword">var</span> outward = private$.outward.process(action_ctxt, data)
+      <span class="hljs-keyword">var</span> err = data.err
+
+      <span class="hljs-keyword">if</span> (outward) {
+        <span class="hljs-keyword">if</span> (<span class="hljs-string">'error'</span> === outward.kind) {
+          err = outward.error ||
+            internals.error(outward.code, outward.info)
+        }
+      }
+
+      <span class="hljs-keyword">if</span> (err) {
+        <span class="hljs-keyword">var</span> out = act_error(instance, err, actmeta, argsarr, actdone,
+                            actend - actstart, msg, origmsg, act_callpoint)
+
+        <span class="hljs-keyword">if</span> (msg.fatal$) {
+          <span class="hljs-keyword">return</span> instance.die(out.err)
+        }
+
+        call_cb = out.call_cb
+        argsarr[<span class="hljs-number">0</span>] = out.err
+
+        <span class="hljs-keyword">if</span> (delegate &amp;&amp; _.isFunction(delegate.on_act_err)) {
+          delegate.on_act_err(actmeta, argsarr[<span class="hljs-number">0</span>])
+        }
+      }
+      <span class="hljs-keyword">else</span> {
+        instance.emit(<span class="hljs-string">'act-out'</span>, msg, argsarr[<span class="hljs-number">1</span>])
+        argsarr[<span class="hljs-number">0</span>] = <span class="hljs-literal">null</span>
+
+        delegate.log.debug(actlog(
+          actmeta, msg, origmsg,
+          { <span class="hljs-attr">kind</span>: <span class="hljs-string">'act'</span>,
+            <span class="hljs-attr">case</span>: <span class="hljs-string">'OUT'</span>,
+            <span class="hljs-attr">duration</span>: actend - actstart,
+            <span class="hljs-attr">result</span>: argsarr[<span class="hljs-number">1</span>]
+          }))
+
+        <span class="hljs-keyword">if</span> (_.isFunction(delegate.on_act_out)) {
+          delegate.on_act_out(actmeta, argsarr[<span class="hljs-number">1</span>])
+        }
+      }
+
+      <span class="hljs-keyword">try</span> {
+        <span class="hljs-keyword">if</span> (call_cb) {
+          actdone.apply(delegate, argsarr) <span class="hljs-comment">// note: err == argsarr[0]</span>
+        }
+      }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-96">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-96">&#182;</a>
+              </div>
+              <p>for exceptions thrown inside the callback</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">catch</span> (ex) {
+        <span class="hljs-keyword">var</span> formattedErr = ex</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-97">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-97">&#182;</a>
+              </div>
+              <p>handle throws of non-Error values</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">if</span> (!Util.isError(ex)) {
+          formattedErr = _.isObject(ex)
+            ? <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(Jsonic.stringify(ex))
+            : <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">''</span> + ex)
+        }
+
+        callback_error(instance, formattedErr, actmeta, argsarr, actdone,
+                       actend - actstart, msg, origmsg, act_callpoint)
+      }
+    }
+  }
+
+
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">handle_inward_break</span> (<span class="hljs-params">inward, act_instance, data, actmeta, origmsg</span>) </span>{
+    <span class="hljs-keyword">if</span> (!inward) <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>
+
+    <span class="hljs-keyword">var</span> msg = data.msg
+    <span class="hljs-keyword">var</span> reply = data.reply
+
+    <span class="hljs-keyword">if</span> (<span class="hljs-string">'error'</span> === inward.kind) {
+      <span class="hljs-keyword">var</span> err = inward.error ||
+            internals.error(inward.code, inward.info)
+
+      <span class="hljs-keyword">if</span> (inward.log &amp;&amp; inward.log.level) {
+        act_instance.log[inward.log.level](errlog(err, errlog(
+          actmeta || {}, msg.meta$.prior, msg, origmsg, inward.log.data
+        )))
+      }
+
+      reply.call(act_instance, err)
+      <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>
+    }
+    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-string">'result'</span> === inward.kind) {
+      <span class="hljs-keyword">if</span> (inward.log &amp;&amp; inward.log.level) {
+        act_instance.log[inward.log.level](actlog(
+          actmeta || {}, msg, origmsg, inward.log.data
+        ))
+      }
+
+      reply.call(act_instance, <span class="hljs-literal">null</span>, inward.result)
+      <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>
+    }
+  }
+
+
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">act_error</span> (<span class="hljs-params">instance, err, actmeta, result, cb,
+    duration, msg, origmsg, act_callpoint</span>) </span>{
+    <span class="hljs-keyword">var</span> call_cb = <span class="hljs-literal">true</span>
+    actmeta = actmeta || {}
+
+    <span class="hljs-keyword">if</span> (!err.seneca) {
+      err = internals.error(err, <span class="hljs-string">'act_execute'</span>, _.extend(
+        {},
+        err.details,
+        {
+          <span class="hljs-attr">message</span>: (err.eraro &amp;&amp; err.orig) ? err.orig.message : err.message,
+          <span class="hljs-attr">pattern</span>: actmeta.pattern,
+          <span class="hljs-attr">fn</span>: actmeta.func,
+          <span class="hljs-attr">cb</span>: cb,
+          <span class="hljs-attr">instance</span>: instance.toString()
+        }))
+
+      result[<span class="hljs-number">0</span>] = err
+    }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-98">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-98">&#182;</a>
+              </div>
+              <p>Special legacy case for seneca-perm</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (err.orig &amp;&amp;
+      _.isString(err.orig.code) &amp;&amp;
+      err.orig.code.indexOf(<span class="hljs-string">'perm/'</span>) === <span class="hljs-number">0</span>) {
+      err = err.orig
+      result[<span class="hljs-number">0</span>] = err
+    }
+
+    err.details = err.details || {}
+    err.details.plugin = err.details.plugin || {}
+
+    <span class="hljs-keyword">var</span> entry = actlog(
+      actmeta, msg, origmsg,
+      {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-99">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-99">&#182;</a>
+              </div>
+              <p>kind is act as this log entry relates to an action</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        kind: <span class="hljs-string">'act'</span>,
+        <span class="hljs-attr">case</span>: <span class="hljs-string">'ERR'</span>,
+        <span class="hljs-attr">duration</span>: duration
+      })
+    entry = errlog(err, entry)
+
+    instance.log.error(entry)
+    instance.emit(<span class="hljs-string">'act-err'</span>, msg, err)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-100">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-100">&#182;</a>
+              </div>
+              <p>when fatal$ is set, prefer to die instead</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">if</span> (so.errhandler &amp;&amp; (!msg || !msg.fatal$)) {
+      call_cb = !so.errhandler.call(instance, err)
+    }
+
+    <span class="hljs-keyword">return</span> {
+      <span class="hljs-attr">call_cb</span>: call_cb,
+      <span class="hljs-attr">err</span>: err
+    }
+  }
+
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">callback_error</span> (<span class="hljs-params">instance, err, actmeta, result, cb,
+    duration, msg, origmsg, act_callpoint</span>) </span>{
+    actmeta = actmeta || {}
+
+    <span class="hljs-keyword">if</span> (!err.seneca) {
+      err = internals.error(err, <span class="hljs-string">'act_callback'</span>, _.extend(
+        {},
+        err.details,
+        {
+          <span class="hljs-attr">message</span>: err.message,
+          <span class="hljs-attr">pattern</span>: actmeta.pattern,
+          <span class="hljs-attr">fn</span>: actmeta.func,
+          <span class="hljs-attr">cb</span>: cb,
+          <span class="hljs-attr">instance</span>: instance.toString()
+        }))
+
+      result[<span class="hljs-number">0</span>] = err
+    }
+
+    err.details = err.details || {}
+    err.details.plugin = err.details.plugin || {}
+
+    instance.log.error(actlog(
+      actmeta, msg, origmsg,
+      {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-101">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-101">&#182;</a>
+              </div>
+              <p>kind is act as this log entry relates to an action</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        kind: <span class="hljs-string">'act'</span>,
+        <span class="hljs-attr">case</span>: <span class="hljs-string">'ERR'</span>,
+        <span class="hljs-attr">info</span>: err.message,
+        <span class="hljs-attr">code</span>: err.code,
+        <span class="hljs-attr">err</span>: err,
+        <span class="hljs-attr">duration</span>: duration
+      }))
+
+    instance.emit(<span class="hljs-string">'act-err'</span>, msg, err, result[<span class="hljs-number">1</span>])
+
+    <span class="hljs-keyword">if</span> (so.errhandler) {
+      so.errhandler.call(instance, err)
+    }
+  }
+
+
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">api_fix</span> (<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>
+
+    <span class="hljs-keyword">var</span> defargs = Common.parsePattern(self, <span class="hljs-built_in">arguments</span>)
+
+    <span class="hljs-keyword">var</span> fix = self.delegate(defargs.pattern)
+
+    fix.add = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">fix_add</span> (<span class="hljs-params"></span>) </span>{
+      <span class="hljs-keyword">var</span> args = Common.parsePattern(fix, <span class="hljs-built_in">arguments</span>, <span class="hljs-string">'rest:.*'</span>, defargs.pattern)
+      <span class="hljs-keyword">var</span> addargs = [args.pattern].concat(args.rest)
+      <span class="hljs-keyword">return</span> self.add.apply(fix, addargs)
+    }
+
+    <span class="hljs-keyword">return</span> fix
+  }
+
+
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">api_delegate</span> (<span class="hljs-params">fixedargs</span>) </span>{
+    <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>
+    fixedargs = fixedargs || {}
+
+    <span class="hljs-keyword">var</span> delegate = <span class="hljs-built_in">Object</span>.create(self)
+    delegate.private$ = <span class="hljs-built_in">Object</span>.create(self.private$)
+
+    delegate.did = refnid()
+
+    <span class="hljs-keyword">var</span> strdesc
+    delegate.toString = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">toString</span> (<span class="hljs-params"></span>) </span>{
+      <span class="hljs-keyword">if</span> (strdesc) <span class="hljs-keyword">return</span> strdesc
+      <span class="hljs-keyword">var</span> vfa = {}
+      _.each(fixedargs, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">v, k</span>) </span>{
+        <span class="hljs-keyword">if</span> (~k.indexOf(<span class="hljs-string">'$'</span>)) <span class="hljs-keyword">return</span>
+        vfa[k] = v
+      })
+
+      strdesc = self.toString() +
+        (_.keys(vfa).length ? <span class="hljs-string">'/'</span> + Jsonic.stringify(vfa) : <span class="hljs-string">''</span>)
+
+      <span class="hljs-keyword">return</span> strdesc
+    }
+
+    delegate.fixedargs = (so.strict.fixedargs
+      ? _.extend({}, fixedargs, self.fixedargs)
+      : _.extend({}, self.fixedargs, fixedargs))
+
+    delegate.delegate = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">delegate</span> (<span class="hljs-params">further_fixedargs</span>) </span>{
+      <span class="hljs-keyword">var</span> args = _.extend({}, delegate.fixedargs, further_fixedargs || {})
+      <span class="hljs-keyword">return</span> self.delegate.call(<span class="hljs-keyword">this</span>, args)
+    }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-102">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-102">&#182;</a>
+              </div>
+              <p>Somewhere to put contextual data for this delegate.
+For example, data for individual web requests.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    delegate.context = {}
+
+    delegate.client = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">client</span> (<span class="hljs-params"></span>) </span>{
+      <span class="hljs-keyword">return</span> self.client.apply(<span class="hljs-keyword">this</span>, <span class="hljs-built_in">arguments</span>)
+    }
+
+    delegate.listen = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">listen</span> (<span class="hljs-params"></span>) </span>{
+      <span class="hljs-keyword">return</span> self.listen.apply(<span class="hljs-keyword">this</span>, <span class="hljs-built_in">arguments</span>)
+    }
+
+    <span class="hljs-keyword">return</span> delegate
+  }
+
+
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">api_options</span> (<span class="hljs-params">options, mark</span>) </span>{
+    <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>
+
+    <span class="hljs-keyword">if</span> (options != <span class="hljs-literal">null</span>) {
+      self.log.debug({
+        <span class="hljs-attr">kind</span>: <span class="hljs-string">'options'</span>,
+        <span class="hljs-attr">case</span>: <span class="hljs-string">'SET'</span>,
+        <span class="hljs-attr">options</span>: options,
+        <span class="hljs-attr">callpoint</span>: callpoint()})
+    }
+
+    so = private$.exports.options = ((options == <span class="hljs-literal">null</span>)
+      ? private$.optioner.get()
+      : private$.optioner.set(options))
+
+    <span class="hljs-keyword">if</span> (so.legacy.logging) {
+      <span class="hljs-keyword">if</span> (options &amp;&amp; options.log &amp;&amp; _.isArray(options.log.map)) {
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; options.log.map.length; ++i) {
+          self.logroute(options.log.map[i])
+        }
+      }
+    }
+
+    <span class="hljs-keyword">return</span> so
+  }
+
+
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">api_error</span> (<span class="hljs-params">errhandler</span>) </span>{
+    <span class="hljs-keyword">this</span>.options({ <span class="hljs-attr">errhandler</span>: errhandler })
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>
+  }
+
+
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">api_test</span> (<span class="hljs-params">errhandler, logspec</span>) </span>{
+    <span class="hljs-keyword">if</span> (<span class="hljs-string">'function'</span> !== <span class="hljs-keyword">typeof</span> errhandler &amp;&amp; <span class="hljs-literal">null</span> !== errhandler) {
+      logspec = errhandler
+      errhandler = <span class="hljs-literal">null</span>
+    }
+
+    <span class="hljs-keyword">this</span>.options({
+      <span class="hljs-attr">errhandler</span>: <span class="hljs-literal">null</span> === errhandler ? <span class="hljs-literal">null</span> : (errhandler || <span class="hljs-built_in">console</span>.log),
+      <span class="hljs-attr">test</span>: <span class="hljs-literal">true</span>,
+      <span class="hljs-attr">log</span>: logspec || <span class="hljs-string">'test'</span>
+    })
+
+    private$.logger = load_logger(root, so.internal.logger)
+
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>
+  }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-103">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-103">&#182;</a>
+              </div>
+              <p>Inspired by <a href="https://github.com/hapijs/hapi/blob/master/lib/plugin.js">https://github.com/hapijs/hapi/blob/master/lib/plugin.js</a> decorate</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">api_decorate</span> (<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">var</span> args = Norma(<span class="hljs-string">'property:s value:.'</span>, <span class="hljs-built_in">arguments</span>)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-104">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-104">&#182;</a>
+              </div>
+              <p>TODO: review; needs to be more universally applicable
+also messages should not be embedded directly</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">var</span> property = args.property
+    Assert(property[<span class="hljs-number">0</span>] !== <span class="hljs-string">'_'</span>, <span class="hljs-string">'property cannot start with _'</span>)
+    Assert(private$.decorations[property] === <span class="hljs-literal">undefined</span>, <span class="hljs-string">'seneca is already decorated with the property'</span>)
+    Assert(root[property] === <span class="hljs-literal">undefined</span>, <span class="hljs-string">'cannot override a core seneca property: '</span> + property)
+
+    root[property] = private$.decorations[property] = args.value
+  }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-105">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-105">&#182;</a>
+              </div>
+              <p>DEPRECATED
+for use with async</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  root.next_act = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">next_act</span> (<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">var</span> argsarr = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Array</span>(<span class="hljs-built_in">arguments</span>.length)
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> l = <span class="hljs-number">0</span>; l &lt; argsarr.length; ++l) { argsarr[l] = <span class="hljs-built_in">arguments</span>[l] }
+
+    <span class="hljs-keyword">var</span> si = <span class="hljs-keyword">this</span> || root
+
+    si.log.warn({
+      <span class="hljs-attr">kind</span>: <span class="hljs-string">'notice'</span>,
+      <span class="hljs-attr">case</span>: <span class="hljs-string">'DEPRECATION'</span>,
+      <span class="hljs-attr">notice</span>: Errors.deprecation.seneca_next_act
+    })
+
+
+    <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">next</span>) </span>{
+      argsarr.push(next)
+      si.act.apply(si, argsarr)
+    }
+  }
+
+  root.gate = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">gate</span> (<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.delegate({<span class="hljs-attr">gate$</span>: <span class="hljs-literal">true</span>})
+  }
+
+
+  root.ungate = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">ungate</span> (<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">this</span>.fixedargs.gate$ = <span class="hljs-literal">false</span>
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>
+  }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-106">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-106">&#182;</a>
+              </div>
+              <p>Add builtin actions.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  root.add({<span class="hljs-attr">role</span>: <span class="hljs-string">'seneca'</span>, <span class="hljs-attr">cmd</span>: <span class="hljs-string">'stats'</span>}, action_seneca_stats)
+  root.add({<span class="hljs-attr">role</span>: <span class="hljs-string">'seneca'</span>, <span class="hljs-attr">cmd</span>: <span class="hljs-string">'close'</span>}, action_seneca_close)
+  root.add({<span class="hljs-attr">role</span>: <span class="hljs-string">'seneca'</span>, <span class="hljs-attr">info</span>: <span class="hljs-string">'fatal'</span>}, action_seneca_fatal)
+  root.add({<span class="hljs-attr">role</span>: <span class="hljs-string">'seneca'</span>, <span class="hljs-attr">get</span>: <span class="hljs-string">'options'</span>}, action_options_get)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-107">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-107">&#182;</a>
+              </div>
+              <p>Legacy builtin actions.
+Remove in Seneca 4.x</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  root.add({<span class="hljs-attr">role</span>: <span class="hljs-string">'seneca'</span>, <span class="hljs-attr">stats</span>: <span class="hljs-literal">true</span>, <span class="hljs-attr">deprecate$</span>: <span class="hljs-literal">true</span>}, action_seneca_stats)
+  root.add({<span class="hljs-attr">role</span>: <span class="hljs-string">'options'</span>, <span class="hljs-attr">cmd</span>: <span class="hljs-string">'get'</span>, <span class="hljs-attr">deprecate$</span>: <span class="hljs-literal">true</span>}, action_options_get)
+
+  Print(root)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-108">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-108">&#182;</a>
+              </div>
+              <p>Define builtin actions.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">action_seneca_fatal</span> (<span class="hljs-params">args, done</span>) </span>{
+    done()
+  }
+
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">action_seneca_close</span> (<span class="hljs-params">args, done</span>) </span>{
+    <span class="hljs-keyword">this</span>.emit(<span class="hljs-string">'close'</span>)
+    done()
+  }
+
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">action_seneca_stats</span> (<span class="hljs-params">args, done</span>) </span>{
+    args = args || {}
+    <span class="hljs-keyword">var</span> stats
+
+    <span class="hljs-keyword">if</span> (args.pattern &amp;&amp; private$.stats.actmap[args.pattern]) {
+      stats = private$.stats.actmap[args.pattern]
+      stats.time = private$.timestats.calculate(args.pattern)
+    }
+    <span class="hljs-keyword">else</span> {
+      stats = _.clone(private$.stats)
+      stats.now = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>()
+      stats.uptime = stats.now - stats.start
+
+      stats.now = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>(stats.now).toISOString()
+      stats.start = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>(stats.start).toISOString()
+
+      <span class="hljs-keyword">var</span> summary =
+      (args.summary == <span class="hljs-literal">null</span>) ||
+        (<span class="hljs-regexp">/^false$/i</span>.exec(args.summary) ? <span class="hljs-literal">false</span> : !!(args.summary))
+
+      <span class="hljs-keyword">if</span> (summary) {
+        stats.actmap = <span class="hljs-keyword">void</span> <span class="hljs-number">0</span>
+      }
+      <span class="hljs-keyword">else</span> {
+        _.each(private$.stats.actmap, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">a, p</span>) </span>{
+          private$.stats.actmap[p].time = private$.timestats.calculate(p)
+        })
+      }
+    }
+
+    <span class="hljs-keyword">if</span> (done) {
+      done(<span class="hljs-literal">null</span>, stats)
+    }
+    <span class="hljs-keyword">return</span> stats
+  }
+
+  root.stats = action_seneca_stats
+
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">action_options_get</span> (<span class="hljs-params">args, done</span>) </span>{
+    <span class="hljs-keyword">var</span> options = private$.optioner.get()
+
+    <span class="hljs-keyword">var</span> base = args.base || <span class="hljs-literal">null</span>
+    <span class="hljs-keyword">var</span> root = base ? (options[base] || {}) : options
+    <span class="hljs-keyword">var</span> val = args.key ? root[args.key] : root
+
+    done(<span class="hljs-literal">null</span>, Common.copydata(val))
+  }
+
+  _.each(so.internal.close_signals, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">active, signal</span>) </span>{
+    <span class="hljs-keyword">if</span> (active) {
+      process.once(signal, handleClose)
+    }
+  })
+
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">load_logger</span> (<span class="hljs-params">instance, log_plugin</span>) </span>{
+    log_plugin = log_plugin || <span class="hljs-built_in">require</span>(<span class="hljs-string">'./lib/logging'</span>)
+
+    <span class="hljs-keyword">return</span> log_plugin.preload.call(instance).extend.logger
+  }
+
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">action_queue_clear</span> (<span class="hljs-params"></span>) </span>{
+    root.emit(<span class="hljs-string">'ready'</span>)
+
+    <span class="hljs-keyword">var</span> ready = root.private$.ready_list.shift()
+    <span class="hljs-keyword">if</span> (ready) {
+      ready()
+    }
+
+    <span class="hljs-keyword">if</span> (root.private$.ge.isclear()) {
+      <span class="hljs-keyword">while</span> (<span class="hljs-number">0</span> &lt; root.private$.ready_list.length) {
+        root.private$.ready_list.shift()()
+      }
+    }
+  }
+
+  <span class="hljs-keyword">return</span> root
+}</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-109">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-109">&#182;</a>
+              </div>
+              <p>Private member variables of Seneca object.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">make_private</span> (<span class="hljs-params"></span>) </span>{
+  <span class="hljs-keyword">return</span> {
+    <span class="hljs-attr">stats</span>: {
+      <span class="hljs-attr">start</span>: <span class="hljs-built_in">Date</span>.now(),
+      <span class="hljs-attr">act</span>: {
+        <span class="hljs-attr">calls</span>: <span class="hljs-number">0</span>,
+        <span class="hljs-attr">done</span>: <span class="hljs-number">0</span>,
+        <span class="hljs-attr">fails</span>: <span class="hljs-number">0</span>,
+        <span class="hljs-attr">cache</span>: <span class="hljs-number">0</span>
+      },
+      <span class="hljs-attr">actmap</span>: {}
+    }
+  }
+}</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-110">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-110">&#182;</a>
+              </div>
+              <p>Callpoint resolver. Indicates location in calling code.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">make_callpoint</span> (<span class="hljs-params">active</span>) </span>{
+  <span class="hljs-keyword">if</span> (active) {
+    <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+      <span class="hljs-keyword">return</span> internals.error.callpoint(
+        <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(),
+        [<span class="hljs-string">'/seneca/seneca.js'</span>, <span class="hljs-string">'/seneca/lib/'</span>, <span class="hljs-string">'/lodash.js'</span>])
+    }
+  }
+
+  <span class="hljs-keyword">return</span> _.noop
+}
+
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">make_log</span> (<span class="hljs-params">instance, modifier</span>) </span>{
+  <span class="hljs-keyword">var</span> log = instance.log || <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">log</span> (<span class="hljs-params">data</span>) </span>{
+    instance.private$.logger(<span class="hljs-keyword">this</span>, data)
+  }
+
+  log = prepare_log(instance, make_modified_log(log, modifier))
+  make_log_levels(instance, log)
+
+  <span class="hljs-keyword">return</span> log
+}
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">prepare_log</span> (<span class="hljs-params">instance, log</span>) </span>{
+  <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">prepare_log_data</span> (<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">var</span> argsarr = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Array</span>(<span class="hljs-built_in">arguments</span>.length)
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> l = <span class="hljs-number">0</span>; l &lt; argsarr.length; ++l) { argsarr[l] = <span class="hljs-built_in">arguments</span>[l] }
+
+    <span class="hljs-keyword">var</span> a0 = argsarr[<span class="hljs-number">0</span>]
+    <span class="hljs-keyword">var</span> data = _.isArray(a0) ? a0
+          : _.isObject(a0) ? a0
+          : argsarr
+    log.call(instance, data)
+  }
+}
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">make_log_levels</span> (<span class="hljs-params">instance, log</span>) </span>{
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">log_level</span> (<span class="hljs-params">level</span>) </span>{
+    <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">data</span>) </span>{
+      data.level = level
+    }
+  }
+  log.debug = prepare_log(instance, make_modified_log(log, log_level(<span class="hljs-string">'debug'</span>)))
+  log.info = prepare_log(instance, make_modified_log(log, log_level(<span class="hljs-string">'info'</span>)))
+  log.warn = prepare_log(instance, make_modified_log(log, log_level(<span class="hljs-string">'warn'</span>)))
+  log.error = prepare_log(instance, make_modified_log(log, log_level(<span class="hljs-string">'error'</span>)))
+  log.fatal = prepare_log(instance, make_modified_log(log, log_level(<span class="hljs-string">'fatal'</span>)))
+}
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">make_modified_log</span> (<span class="hljs-params">log, modifier</span>) </span>{
+  <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">log_modifier</span> (<span class="hljs-params">data</span>) </span>{
+    modifier(data)
+    log.call(<span class="hljs-keyword">this</span>, data)
+  }
+}
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">default_log_modifier</span> (<span class="hljs-params">data</span>) </span>{
+  data.level = <span class="hljs-literal">null</span> == data.level ? <span class="hljs-string">'debug'</span> : data.level
+  data.seneca = <span class="hljs-literal">null</span> == data.seneca ? root.id : data.seneca
+  data.when = <span class="hljs-literal">null</span> == data.when ? <span class="hljs-built_in">Date</span>.now() : data.when
+}
+
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">act_make_delegate</span> (<span class="hljs-params">instance, msg, actmeta</span>) </span>{
+  actmeta = actmeta || {}
+
+  <span class="hljs-keyword">var</span> delegate_args = {
+    <span class="hljs-attr">plugin$</span>: {
+      <span class="hljs-attr">name</span>: actmeta.plugin_name,
+      <span class="hljs-attr">tag</span>: actmeta.plugin_tag
+    }
+  }
+
+  <span class="hljs-keyword">var</span> delegate = instance.delegate(delegate_args)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-111">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-111">&#182;</a>
+              </div>
+              <p>special overrides</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-keyword">if</span> (msg.meta$.tx) {
+    delegate.fixedargs.tx$ = msg.meta$.tx
+  }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-112">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-112">&#182;</a>
+              </div>
+              <p>automate actid log insertion</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>
+  delegate.log = make_log(delegate, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">act_delegate_log_modifier</span> (<span class="hljs-params">data</span>) </span>{
+    data.actid = msg.meta$.id
+
+    data.plugin_name = data.plugin_name || actmeta.plugin_name
+    data.plugin_tag = data.plugin_tag || actmeta.plugin_tag
+    data.pattern = data.pattern || actmeta.pattern
+  })
+
+  <span class="hljs-keyword">if</span> (actmeta.priormeta) {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-113">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-113">&#182;</a>
+              </div>
+              <p>TODO: support Common.parsePattern</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    delegate.prior = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">prior_msg, prior_cb</span>) </span>{
+      prior_msg = _.clone(prior_msg)
+      prior_msg.tx$ = msg.meta$.tx
+      prior_msg.default$ = prior_msg.default$ || msg.default$
+
+      <span class="hljs-keyword">delete</span> prior_msg.id$
+      <span class="hljs-keyword">delete</span> prior_msg.gate$
+      <span class="hljs-keyword">delete</span> prior_msg.actid$
+      <span class="hljs-keyword">delete</span> prior_msg.meta$
+      <span class="hljs-keyword">delete</span> prior_msg.transport$
+
+      prior_msg.meta$ = {}
+      prior_msg.meta$.start = <span class="hljs-built_in">Date</span>.now()
+      prior_msg.meta$.sync = msg.meta$.sync
+
+      prior_msg.meta$.prior = _.clone(msg.meta$.prior)
+      prior_msg.meta$.prior.chain = _.clone(msg.meta$.prior.chain)
+      prior_msg.meta$.prior.chain.push(actmeta.id)
+      prior_msg.meta$.prior.entry = <span class="hljs-literal">false</span>
+      prior_msg.meta$.prior.depth++
+
+      <span class="hljs-keyword">var</span> prior_action_ctxt = {
+        <span class="hljs-attr">actmeta</span>: actmeta.priormeta
+      }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-114">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-114">&#182;</a>
+              </div>
+              <p>TODO: handle inward result</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      delegate.private$.inward.process(
+        {<span class="hljs-attr">tags</span>: [<span class="hljs-string">'prior'</span>]},
+        prior_action_ctxt, {<span class="hljs-attr">msg</span>: msg})
+
+      <span class="hljs-keyword">var</span> pd = act_make_delegate(delegate, msg, actmeta.priormeta)
+      actmeta.priormeta.func.call(pd, prior_msg, prior_cb.bind(pd))
+    }
+
+    delegate.parent = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">prior_msg, prior_cb</span>) </span>{
+      delegate.log.warn({
+        <span class="hljs-attr">kind</span>: <span class="hljs-string">'notice'</span>,
+        <span class="hljs-attr">case</span>: <span class="hljs-string">'DEPRECATION'</span>,
+        <span class="hljs-attr">notice</span>: Errors.deprecation.seneca_parent
+      })
+      delegate.prior(prior_msg, prior_cb)
+    }
+  }
+  <span class="hljs-keyword">else</span> {
+    delegate.prior = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">msg, done</span>) </span>{
+      <span class="hljs-keyword">var</span> out = msg.default$ ? msg.default$ : <span class="hljs-literal">null</span>
+      <span class="hljs-keyword">return</span> done.call(delegate, <span class="hljs-literal">null</span>, out)
+    }
+  }
+
+  <span class="hljs-keyword">return</span> delegate
+}</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>common.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page_wrapper">
+            <div id="jump_page">
+              
+                
+                <a class="source" href="actions.html">
+                  actions.js
+                </a>
+              
+                
+                <a class="source" href="common.html">
+                  common.js
+                </a>
+              
+                
+                <a class="source" href="errors.html">
+                  errors.js
+                </a>
+              
+                
+                <a class="source" href="legacy.html">
+                  legacy.js
+                </a>
+              
+                
+                <a class="source" href="logging.html">
+                  logging.js
+                </a>
+              
+                
+                <a class="source" href="optioner.html">
+                  optioner.js
+                </a>
+              
+                
+                <a class="source" href="plugins.html">
+                  plugins.js
+                </a>
+              
+                
+                <a class="source" href="print.html">
+                  print.js
+                </a>
+              
+                
+                <a class="source" href="transport.html">
+                  transport.js
+                </a>
+              
+                
+                <a class="source" href="seneca.html">
+                  seneca.js
+                </a>
+              
+            </div>
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>common.js</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-comment">/* Copyright (c) 2010-2016 Richard Rodger and other contributors, MIT License */</span>
+<span class="hljs-meta">'use strict'</span>
+
+<span class="hljs-keyword">var</span> Util = <span class="hljs-built_in">require</span>(<span class="hljs-string">'util'</span>)
+<span class="hljs-keyword">var</span> _ = <span class="hljs-built_in">require</span>(<span class="hljs-string">'lodash'</span>)
+<span class="hljs-keyword">var</span> Eraro = <span class="hljs-built_in">require</span>(<span class="hljs-string">'eraro'</span>)
+<span class="hljs-keyword">var</span> Jsonic = <span class="hljs-built_in">require</span>(<span class="hljs-string">'jsonic'</span>)
+<span class="hljs-keyword">var</span> Nid = <span class="hljs-built_in">require</span>(<span class="hljs-string">'nid'</span>)
+<span class="hljs-keyword">var</span> Norma = <span class="hljs-built_in">require</span>(<span class="hljs-string">'norma'</span>)
+<span class="hljs-keyword">var</span> Errors = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./errors'</span>)
+
+<span class="hljs-keyword">var</span> internals = {
+  <span class="hljs-attr">error</span>: Eraro({
+    <span class="hljs-attr">package</span>: <span class="hljs-string">'seneca'</span>,
+    <span class="hljs-attr">msgmap</span>: Errors,
+    <span class="hljs-attr">override</span>: <span class="hljs-literal">true</span>
+  })
+}
+
+
+exports.boolify = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">v</span>) </span>{
+  <span class="hljs-keyword">try</span> {
+    <span class="hljs-keyword">return</span> !!<span class="hljs-built_in">JSON</span>.parse(v)
+  }
+  <span class="hljs-keyword">catch</span> (e) {
+    <span class="hljs-keyword">return</span> !!v
+  }
+}
+
+exports.tagnid = Nid({<span class="hljs-attr">length</span>: <span class="hljs-number">3</span>, <span class="hljs-attr">alphabet</span>: <span class="hljs-string">'ABCDEFGHIJKLMNOPQRSTUVWXYZ'</span>})
+
+exports.delegate = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">scope, func</span>) </span>{
+  <span class="hljs-keyword">var</span> args = <span class="hljs-built_in">Array</span>.prototype.slice.call(<span class="hljs-built_in">arguments</span>, <span class="hljs-number">2</span>)
+  <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">return</span> func.apply(scope, args.concat(<span class="hljs-built_in">Array</span>.prototype.slice.call(<span class="hljs-built_in">arguments</span>)))
+  }
+}</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>use args properties as fields
+defaults: map of default values
+args: args object
+fixed: map of fixed values - cannot be overriden
+omits: array of prop names to exclude
+defaults, args, and fixed are deepextended together in that order</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>exports.argprops = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">argprops</span> (<span class="hljs-params">defaults, args, fixed, omits</span>) </span>{
+  omits = _.isArray(omits) ? omits
+    : _.isObject(omits) ? _.keys(omits)
+    : _.isString(omits) ? omits.split(<span class="hljs-regexp">/\s*,\s*/</span>)
+    : <span class="hljs-string">''</span> + omits</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <p>a little pre omit to avoid entities named in omits</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-keyword">var</span> usedargs = _.omit(args, omits)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <p>don’t support $ args</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  usedargs = clean(usedargs)
+
+  <span class="hljs-keyword">return</span> _.omit(deepextend(defaults, usedargs, fixed), omits)
+}</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <p>string args override object args</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>exports.parsePattern = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">parse_pattern</span> (<span class="hljs-params">instance, args, normaspec, fixed</span>) </span>{
+  args =
+    Norma(<span class="hljs-string">'{strargs:s? objargs:o? moreobjargs:o? '</span> + (normaspec || <span class="hljs-string">''</span>) + <span class="hljs-string">'}'</span>, args)
+
+  <span class="hljs-keyword">try</span> {
+    <span class="hljs-keyword">return</span> _.extend(
+      args,
+      { <span class="hljs-attr">pattern</span>: _.extend(
+          {},</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <p>Precedence of arguments in add,act is left-to-right</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>          args.moreobjargs ? args.moreobjargs : {},
+          args.objargs ? args.objargs : {},
+          args.strargs ? Jsonic(args.strargs) : {},
+
+          fixed || {})
+      })
+  }
+  <span class="hljs-keyword">catch</span> (e) {
+    <span class="hljs-keyword">var</span> col = (e.line === <span class="hljs-number">1</span>) ? e.column - <span class="hljs-number">1</span> : e.column
+    <span class="hljs-keyword">throw</span> internals.error(<span class="hljs-string">'add_string_pattern_syntax'</span>, {
+      <span class="hljs-attr">argstr</span>: args,
+      <span class="hljs-attr">syntax</span>: e.message,
+      <span class="hljs-attr">line</span>: e.line,
+      <span class="hljs-attr">col</span>: col
+    })
+  }
+}
+
+<span class="hljs-keyword">var</span> copydata = exports.copydata = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">obj</span>) </span>{
+  <span class="hljs-keyword">var</span> copy</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              <p>Handle the 3 simple types, and null or undefined</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-keyword">if</span> (obj === <span class="hljs-literal">null</span> || <span class="hljs-keyword">typeof</span> obj !== <span class="hljs-string">'object'</span>) <span class="hljs-keyword">return</span> obj</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-8">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
+              <p>Handle Date</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-keyword">if</span> (_.isDate(obj)) {
+    copy = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>()
+    copy.setTime(obj.getTime())
+    <span class="hljs-keyword">return</span> copy
+  }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-9">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-9">&#182;</a>
+              </div>
+              <p>Handle Array</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-keyword">if</span> (_.isArray(obj)) {
+    copy = []
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>, len = obj.length; i &lt; len; ++i) {
+      copy[i] = copydata(obj[i])
+    }
+    <span class="hljs-keyword">return</span> copy
+  }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-10">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-10">&#182;</a>
+              </div>
+              <p>Handle Object</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-keyword">if</span> (_.isObject(obj)) {
+    copy = {}
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> attr <span class="hljs-keyword">in</span> obj) {
+      <span class="hljs-keyword">if</span> (obj.hasOwnProperty(attr)) copy[attr] = copydata(obj[attr])
+    }
+    <span class="hljs-keyword">return</span> copy
+  }
+
+  <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">"Unable to copy obj! Its type isn't supported."</span>)
+}
+
+<span class="hljs-keyword">var</span> pattern = exports.pattern = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">pattern</span> (<span class="hljs-params">args</span>) </span>{
+  <span class="hljs-keyword">if</span> (_.isString(args)) {
+    <span class="hljs-keyword">return</span> args
+  }
+
+  args = args || {}
+  <span class="hljs-keyword">var</span> sb = []
+  _.each(args, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">v, k</span>) </span>{
+    <span class="hljs-keyword">if</span> (!~k.indexOf(<span class="hljs-string">'$'</span>) &amp;&amp; !_.isFunction(v)) {
+      sb.push(k + <span class="hljs-string">':'</span> + v)
+    }
+  })
+
+  sb.sort()
+
+  <span class="hljs-keyword">return</span> sb.join(<span class="hljs-string">','</span>)
+}
+
+exports.pincanon = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">pincanon</span> (<span class="hljs-params">inpin</span>) </span>{
+  <span class="hljs-keyword">if</span> (_.isString(inpin)) {
+    <span class="hljs-keyword">return</span> pattern(Jsonic(inpin))
+  }
+  <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (_.isArray(inpin)) {
+    <span class="hljs-keyword">var</span> pin = _.map(inpin, pincanon)
+    pin.sort()
+    <span class="hljs-keyword">return</span> pin.join(<span class="hljs-string">';'</span>)
+  }
+  <span class="hljs-keyword">else</span> {
+    <span class="hljs-keyword">return</span> pattern(inpin)
+  }
+}</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-11">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-11">&#182;</a>
+              </div>
+              <p>noop for callbacks</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>exports.nil = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">nil</span> (<span class="hljs-params"></span>) </span>{
+  _.each(<span class="hljs-built_in">arguments</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">arg</span>) </span>{
+    <span class="hljs-keyword">if</span> (_.isFunction(arg)) {
+      <span class="hljs-keyword">return</span> arg()
+    }
+  })
+}</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-12">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-12">&#182;</a>
+              </div>
+              <p>remove any props containing $</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">clean</span> (<span class="hljs-params">obj</span>) </span>{
+  <span class="hljs-keyword">if</span> (obj === <span class="hljs-literal">null</span>) <span class="hljs-keyword">return</span> obj
+
+  <span class="hljs-keyword">return</span> _.pickBy(obj, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">val, prop</span>) </span>{
+    <span class="hljs-keyword">return</span> !_.includes(prop, <span class="hljs-string">'$'</span>)
+  })
+}
+exports.clean = clean
+
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">deepextend</span> (<span class="hljs-params"></span>) </span>{
+  <span class="hljs-keyword">var</span> argsarr = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Array</span>(<span class="hljs-built_in">arguments</span>.length)
+  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> l = <span class="hljs-number">0</span>; l &lt; argsarr.length; ++l) { argsarr[l] = <span class="hljs-built_in">arguments</span>[l] }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-13">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-13">&#182;</a>
+              </div>
+              <p>Lodash uses the reverse order to apply defaults than the deepextend API.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  argsarr = argsarr.reverse()</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-14">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-14">&#182;</a>
+              </div>
+              <p>Add an empty object to the front of the args.  Defaults will be written
+to this empty object.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  argsarr.unshift({})
+
+  <span class="hljs-keyword">return</span> _.defaultsDeep.apply(_, argsarr)
+}
+exports.deepextend = deepextend</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-15">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-15">&#182;</a>
+              </div>
+              <p>loop over a list of items recursively
+list can be an integer - number of times to recurse</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>exports.recurse = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">recurse</span> (<span class="hljs-params">list, work, done</span>) </span>{
+  <span class="hljs-keyword">var</span> ctxt = <span class="hljs-keyword">this</span>
+
+  <span class="hljs-keyword">if</span> (_.isNumber(list)) {
+    list = _.range(<span class="hljs-number">0</span>, list)
+  }
+  <span class="hljs-keyword">else</span> {
+    list = _.clone(list)
+  }
+
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">next</span> (<span class="hljs-params">err, out</span>) </span>{
+    <span class="hljs-keyword">if</span> (err) <span class="hljs-keyword">return</span> done(err, out)
+
+    <span class="hljs-keyword">var</span> item = list.shift()
+
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">void</span> <span class="hljs-number">0</span> !== item) {
+      work.call(ctxt, item, next)
+    }
+    <span class="hljs-keyword">else</span> {
+      done.call(ctxt, err, out)
+    }
+  }
+  next.call(ctxt)
+}
+
+exports.print = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">print</span> (<span class="hljs-params">err, out</span>) </span>{
+  <span class="hljs-keyword">if</span> (err) <span class="hljs-keyword">throw</span> err
+
+  <span class="hljs-built_in">console</span>.log(Util.inspect(out, {<span class="hljs-attr">depth</span>: <span class="hljs-literal">null</span>}))
+  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">2</span>; <span class="hljs-built_in">arguments</span>.length &gt; <span class="hljs-number">2</span>; i++) {
+    <span class="hljs-built_in">console</span>.dir(<span class="hljs-built_in">arguments</span>[i])
+  }
+}
+
+
+exports.makedie = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">instance, ctxt</span>) </span>{
+  ctxt = _.extend(ctxt, instance.die ? instance.die.context : {})
+
+  <span class="hljs-keyword">var</span> die = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">err</span>) </span>{
+    <span class="hljs-keyword">var</span> die_trace = <span class="hljs-string">'\n'</span> + (<span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">'die trace'</span>).stack)
+        .match(<span class="hljs-regexp">/^.*?\n.*\n(.*)/</span>)[<span class="hljs-number">1</span>]
+
+    <span class="hljs-keyword">try</span> {
+      <span class="hljs-keyword">if</span> (!err) {
+        err = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">'unknown'</span>)
+      }
+      <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (!Util.isError(err)) {
+        err = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(_.isString(err) ? err : Util.inspect(err))
+      }
+
+      err.fatal$ = <span class="hljs-literal">true</span>
+
+      <span class="hljs-keyword">var</span> so = instance.options()</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-16">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-16">&#182;</a>
+              </div>
+              <p>undead is only for testing, do not use in production</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">var</span> undead = (so.debug &amp;&amp; so.debug.undead) || (err &amp;&amp; err.undead)
+
+      <span class="hljs-keyword">var</span> logdesc = {
+        <span class="hljs-attr">kind</span>: ctxt.txt,
+        <span class="hljs-attr">plugin</span>: ctxt.plugin,
+        <span class="hljs-attr">tag</span>: ctxt.tag,
+        <span class="hljs-attr">id</span>: ctxt.id,
+        <span class="hljs-attr">code</span>: err.code,
+        <span class="hljs-attr">notice</span>: err.message,
+        <span class="hljs-attr">err</span>: err,
+        <span class="hljs-attr">callpoint</span>: ctxt.callpoint()
+      }
+
+      instance.log.fatal.apply(instance, logdesc)
+
+      <span class="hljs-keyword">var</span> stack = err.stack || <span class="hljs-string">''</span>
+      stack = stack.replace(<span class="hljs-regexp">/^.*?\n/</span>, <span class="hljs-string">'\n'</span>)
+
+      <span class="hljs-keyword">var</span> procdesc = <span class="hljs-string">'\n  pid='</span> + process.pid +
+        <span class="hljs-string">', arch='</span> + process.arch +
+        <span class="hljs-string">', platform='</span> + process.platform +
+        <span class="hljs-string">',\n  path='</span> + process.execPath +
+        <span class="hljs-string">',\n  argv='</span> + Util.inspect(process.argv).replace(<span class="hljs-regexp">/\n/g</span>, <span class="hljs-string">''</span>) +
+        <span class="hljs-string">',\n  env='</span> + Util.inspect(process.env).replace(<span class="hljs-regexp">/\n/g</span>, <span class="hljs-string">''</span>)
+
+      <span class="hljs-keyword">var</span> fatalmodemsg = instance.fixedargs.fatal$
+        ? <span class="hljs-string">'\n  ALL ERRORS FATAL: action called with argument fatal$:true '</span> +
+        <span class="hljs-string">'(probably a plugin init error, or using a plugin seneca instance)'</span> : <span class="hljs-string">''</span>
+
+      <span class="hljs-keyword">var</span> stderrmsg =
+      <span class="hljs-string">'\n\n'</span> +
+        <span class="hljs-string">'Seneca Fatal Error\n'</span> +
+        <span class="hljs-string">'==================\n\n'</span> +
+        <span class="hljs-string">'Message: '</span> + err.message + <span class="hljs-string">'\n\n'</span> +
+        <span class="hljs-string">'Code: '</span> + err.code + <span class="hljs-string">'\n\n'</span> +
+        <span class="hljs-string">'Details: '</span> + Util.inspect(err.details, {<span class="hljs-attr">depth</span>: <span class="hljs-literal">null</span>}) + <span class="hljs-string">'\n\n'</span> +
+        <span class="hljs-string">'Stack: '</span> + stack + <span class="hljs-string">'\n\n'</span> +
+        <span class="hljs-string">'Instance: '</span> + instance.toString() + fatalmodemsg + die_trace + <span class="hljs-string">'\n\n'</span> +
+        <span class="hljs-string">'When: '</span> + <span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>().toISOString() + <span class="hljs-string">'\n\n'</span> +
+        <span class="hljs-string">'Log: '</span> + Jsonic.stringify(logdesc) + <span class="hljs-string">'\n\n'</span> +
+        <span class="hljs-string">'Node:\n  '</span> + Util.inspect(process.versions).replace(<span class="hljs-regexp">/\s+/g</span>, <span class="hljs-string">' '</span>) +
+        <span class="hljs-string">',\n  '</span> + Util.inspect(process.features).replace(<span class="hljs-regexp">/\s+/g</span>, <span class="hljs-string">' '</span>) +
+        <span class="hljs-string">',\n  '</span> + Util.inspect(process.moduleLoadList).replace(<span class="hljs-regexp">/\s+/g</span>, <span class="hljs-string">' '</span>) + <span class="hljs-string">'\n\n'</span> +
+        <span class="hljs-string">'Process: '</span> + procdesc + <span class="hljs-string">'\n\n'</span>
+
+      <span class="hljs-keyword">if</span> (so.errhandler) {
+        so.errhandler.call(instance, err)
+      }
+
+      <span class="hljs-keyword">if</span> (instance.closed) {
+        <span class="hljs-keyword">return</span>
+      }
+
+      <span class="hljs-keyword">if</span> (!undead) {
+        instance.act(<span class="hljs-string">'role:seneca,info:fatal,closing$:true'</span>, {<span class="hljs-attr">err</span>: err})
+
+        instance.close(</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-17">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-17">&#182;</a>
+              </div>
+              <p>terminate process, err (if defined) is from seneca.close</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>          <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">err</span>) </span>{
+            <span class="hljs-keyword">if</span> (!undead) {
+              process.nextTick(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+                <span class="hljs-keyword">if</span> (err) {
+                  exports.console_error(err)
+                }
+
+                exports.console_error(stderrmsg)
+                exports.console_error(<span class="hljs-string">'\n\nSENECA TERMINATED at '</span> + (<span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>().toISOString()) +
+                  <span class="hljs-string">'. See above for error report.\n\n'</span>)
+                process.exit(<span class="hljs-number">1</span>)
+              })
+            }
+          }
+       )
+      }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-18">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-18">&#182;</a>
+              </div>
+              <p>make sure we close down within options.deathdelay seconds</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">if</span> (!undead) {
+        <span class="hljs-keyword">var</span> killtimer = setTimeout(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+          exports.console_error(stderrmsg)
+          exports.console_error(<span class="hljs-string">'\n\nSENECA TERMINATED (on timeout) at '</span> +
+            (<span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>().toISOString()) + <span class="hljs-string">'.\n\n'</span>)
+          process.exit(<span class="hljs-number">2</span>)
+        }, so.deathdelay)
+        killtimer.unref()
+      }
+    }
+    <span class="hljs-keyword">catch</span> (panic) {
+      <span class="hljs-keyword">var</span> msg =
+      <span class="hljs-string">'\n\n'</span> +
+        <span class="hljs-string">'Seneca Panic\n'</span> +
+        <span class="hljs-string">'============\n\n'</span> +
+        panic.stack +
+        <span class="hljs-string">'\n\nOriginal Error:\n'</span> +
+        (<span class="hljs-built_in">arguments</span>[<span class="hljs-number">0</span>] &amp;&amp; <span class="hljs-built_in">arguments</span>[<span class="hljs-number">0</span>].stack ? <span class="hljs-built_in">arguments</span>[<span class="hljs-number">0</span>].stack : <span class="hljs-built_in">arguments</span>[<span class="hljs-number">0</span>])
+      exports.console_error(msg)
+    }
+  }
+
+  die.context = ctxt
+
+  <span class="hljs-keyword">return</span> die
+}</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-19">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-19">&#182;</a>
+              </div>
+              <p>Intentional console errors use this function. Helps to find spurious debugging.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>exports.console_error = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+  <span class="hljs-built_in">console</span>.error.apply(<span class="hljs-literal">null</span>, <span class="hljs-built_in">arguments</span>)
+}
+
+
+exports.make_standard_act_log_entry = <span class="hljs-function"><span class="hljs-keyword">function</span>
+(<span class="hljs-params">actmeta, msg, origmsg, ctxt</span>) </span>{
+  <span class="hljs-keyword">var</span> transport = origmsg.transport$ || {}
+  <span class="hljs-keyword">var</span> callmeta = msg.meta$ || {}
+  <span class="hljs-keyword">var</span> prior = callmeta.prior || {}
+  actmeta = actmeta || {}
+
+  <span class="hljs-keyword">return</span> _.extend({
+    <span class="hljs-attr">actid</span>: callmeta.id,
+    <span class="hljs-attr">msg</span>: msg,
+    <span class="hljs-attr">entry</span>: prior.entry,
+    <span class="hljs-attr">prior</span>: prior.chain,
+    <span class="hljs-attr">gate</span>: origmsg.gate$,
+    <span class="hljs-attr">caller</span>: origmsg.caller$,
+    <span class="hljs-attr">meta</span>: actmeta,</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-20">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-20">&#182;</a>
+              </div>
+              <p>these are transitional as need to be updated
+to standard transport metadata</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    client: actmeta.client,
+    <span class="hljs-attr">listen</span>: !!transport.origin,
+    <span class="hljs-attr">transport</span>: transport
+  }, ctxt)
+}
+
+
+exports.make_standard_err_log_entry = <span class="hljs-function"><span class="hljs-keyword">function</span>
+(<span class="hljs-params">err, ctxt</span>) </span>{
+  <span class="hljs-keyword">if</span> (!err) <span class="hljs-keyword">return</span> ctxt
+
+  <span class="hljs-keyword">return</span> _.extend({
+    <span class="hljs-attr">notice</span>: err.message,
+    <span class="hljs-attr">code</span>: err.code,
+    <span class="hljs-attr">err</span>: err
+  }, ctxt)
+}</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

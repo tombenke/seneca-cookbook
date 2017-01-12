@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>errors.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page_wrapper">
+            <div id="jump_page">
+              
+                
+                <a class="source" href="actions.html">
+                  actions.js
+                </a>
+              
+                
+                <a class="source" href="common.html">
+                  common.js
+                </a>
+              
+                
+                <a class="source" href="errors.html">
+                  errors.js
+                </a>
+              
+                
+                <a class="source" href="legacy.html">
+                  legacy.js
+                </a>
+              
+                
+                <a class="source" href="logging.html">
+                  logging.js
+                </a>
+              
+                
+                <a class="source" href="optioner.html">
+                  optioner.js
+                </a>
+              
+                
+                <a class="source" href="plugins.html">
+                  plugins.js
+                </a>
+              
+                
+                <a class="source" href="print.html">
+                  print.js
+                </a>
+              
+                
+                <a class="source" href="transport.html">
+                  transport.js
+                </a>
+              
+                
+                <a class="source" href="seneca.html">
+                  seneca.js
+                </a>
+              
+            </div>
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>errors.js</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-comment">/* Copyright (c) 2010-2015 Richard Rodger, MIT License */</span>
+<span class="hljs-meta">'use strict'</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>Error code messages.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-built_in">module</span>.exports = {
+  <span class="hljs-attr">test_msg</span>: <span class="hljs-string">'Test message.'</span>,
+
+  <span class="hljs-attr">test_prop</span>: <span class="hljs-string">'TESTING: exists: &lt;%=exists%&gt;, notfound:&lt;%=notfound%&gt;, str=&lt;%=str%&gt;,'</span> +
+    <span class="hljs-string">' obj=&lt;%=obj%&gt;, arr=&lt;%=arr%&gt;, bool=&lt;%=bool%&gt;, null=&lt;%=null$%&gt;, delete=&lt;%=delete$%&gt;, undefined=&lt;%=undefined$%&gt;, void=&lt;%=void$%&gt;, NaN=&lt;%=NaN$%&gt;'</span>,
+
+  <span class="hljs-attr">add_string_pattern_syntax</span>: <span class="hljs-string">'Could not add action due to syntax error in '</span> +
+    <span class="hljs-string">'pattern string: "&lt;%=argstr%&gt;": Line:&lt;%=line%&gt;, Column:&lt;%=col%&gt;; &lt;%=syntax%&gt;'</span>,
+
+  <span class="hljs-attr">act_string_args_syntax</span>: <span class="hljs-string">'Could execute action due to syntax error in argument'</span> +
+    <span class="hljs-string">' string: "&lt;%=argstr%&gt;": Line:&lt;%=line%&gt;, Column:&lt;%=col%&gt;; &lt;%=syntax%&gt;'</span>,
+
+  <span class="hljs-attr">add_pattern_object_expected_after_string_pattern</span>: <span class="hljs-string">'Could not add action; '</span> +
+    <span class="hljs-string">'unexpected argument; a pattern object or function should follow the pattern'</span> +
+    <span class="hljs-string">' string; arguments were: "&lt;%=args%&gt;".'</span>,
+
+  <span class="hljs-attr">add_pattern_object_expected</span>: <span class="hljs-string">'Could not add action; unexpected argument; '</span> +
+    <span class="hljs-string">'a pattern object or string should be the first argument; '</span> +
+    <span class="hljs-string">'arguments were: "&lt;%=args%&gt;".'</span>,
+
+  <span class="hljs-attr">add_action_function_expected</span>: <span class="hljs-string">'Could not add action: the action function '</span> +
+    <span class="hljs-string">'should appear after the pattern; arguments were: "&lt;%=args%&gt;".'</span>,
+
+  <span class="hljs-attr">add_action_metadata_not_an_object</span>: <span class="hljs-string">'Could not add action: the argument after '</span> +
+    <span class="hljs-string">'the action function should be a metadata object: &lt;%=actmeta%&gt;.'</span>,
+
+  <span class="hljs-attr">add_empty_pattern</span>: <span class="hljs-string">'Could not add action, as the action pattern is empty: '</span> +
+    <span class="hljs-string">'"&lt;%=args%&gt;"'</span>,
+
+  <span class="hljs-attr">act_if_expects_boolean</span>: <span class="hljs-string">'The method act_if expects a boolean value as its '</span> +
+    <span class="hljs-string">'first argument, was: "&lt;%=first%&gt;".'</span>,
+
+  <span class="hljs-attr">act_not_found</span>: <span class="hljs-string">'No matching action pattern found for &lt;%=args%&gt;, and no default '</span> +
+    <span class="hljs-string">'result provided (using a default$ property).'</span>,
+
+  <span class="hljs-attr">act_default_bad</span>: <span class="hljs-string">'No matching action pattern found for &lt;%=args%&gt;, and default '</span> +
+    <span class="hljs-string">'result is not a plain object or an array: &lt;%=xdefault%&gt;.'</span>,
+
+  <span class="hljs-attr">act_no_args</span>: <span class="hljs-string">'No action pattern defined in "&lt;%=args%&gt;"; the first argument '</span> +
+    <span class="hljs-string">'should be a string or object pattern.'</span>,
+
+  <span class="hljs-attr">act_invalid_msg</span>: <span class="hljs-string">'Action &lt;%=pattern%&gt; received an invalid message; &lt;%=message%&gt;; '</span> +
+    <span class="hljs-string">'message content was: &lt;%=msg%&gt;.'</span>,
+
+  <span class="hljs-attr">act_execute</span>: <span class="hljs-string">'Action &lt;%=pattern%&gt; failed: &lt;%=message%&gt;.'</span>,
+
+  <span class="hljs-attr">act_callback</span>: <span class="hljs-string">'Action &lt;%=pattern%&gt; callback threw: &lt;%=message%&gt;.'</span>,
+
+  <span class="hljs-attr">act_loop</span>: <span class="hljs-string">'Action &lt;%=pattern%&gt; loops back on itself. Action details: &lt;%=actmeta%&gt;, history: &lt;%=history%&gt;'</span>,
+
+  <span class="hljs-attr">result_not_objarr</span>: <span class="hljs-string">'Action &lt;%=pattern%&gt; responded with result that was not an '</span> +
+    <span class="hljs-string">'object or array: &lt;%=result%&gt;; Use option strict:{result:false} to allow; '</span> +
+    <span class="hljs-string">'arguments were: &lt;%=args%&gt;'</span>,
+
+  <span class="hljs-attr">no_client</span>: <span class="hljs-string">'Transport client was not created; arguments were: "&lt;%=args%&gt;".'</span>,
+
+  <span class="hljs-attr">invalid_options</span>: <span class="hljs-string">'Invalid options; &lt;%=message%&gt;'</span>,
+
+  <span class="hljs-attr">plugin_required</span>: <span class="hljs-string">'The &lt;%=name%&gt; plugin depends on the &lt;%=dependency%&gt; plugin, '</span> +
+    <span class="hljs-string">'which is not loaded yet.'</span>,
+
+  <span class="hljs-attr">plugin_init</span>: <span class="hljs-string">'The &lt;%=name%&gt; plugin failed to initialize: &lt;%=plugin_error%&gt;.'</span>,
+
+  <span class="hljs-attr">plugin_init_timeout</span>: <span class="hljs-string">'The &lt;%=name%&gt; plugin failed to initialize within '</span> +
+    <span class="hljs-string">'&lt;%=timeout%&gt; milliseconds (The init:&lt;%=name%&gt; action did not call the "done"'</span> +
+    <span class="hljs-string">' callback in time).'</span>,
+
+  <span class="hljs-attr">export_not_found</span>: <span class="hljs-string">'The export &lt;%=key%&gt; has not been defined by a plugin.'</span>,
+
+  <span class="hljs-attr">store_cmd_missing</span>: <span class="hljs-string">'Entity data store implementation is missing a command; '</span> +
+    <span class="hljs-string">'"&lt;%=cmd%&gt;": "&lt;%=store%&gt;".'</span>,
+
+  <span class="hljs-attr">sub_function_catch</span>: <span class="hljs-string">'Pattern subscription function threw: &lt;%=message%&gt; on '</span> +
+    <span class="hljs-string">'args: &lt;%=args%&gt;, result: &lt;%=result%&gt;.'</span>,
+
+  <span class="hljs-attr">ready_failed</span>: <span class="hljs-string">'Ready function failed: &lt;%=message%&gt;'</span>,</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <p>Legacy error message codes</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>
+  act_invalid_args: <span class="hljs-string">'Action &lt;%=pattern%&gt; has invalid arguments; &lt;%=message%&gt;; '</span> +
+    <span class="hljs-string">'arguments were: &lt;%=msg%&gt;.'</span>
+}
+
+
+<span class="hljs-built_in">module</span>.exports.deprecation = {
+  <span class="hljs-attr">seneca_parent</span>: <span class="hljs-string">'Seneca.parent has been renamed to Seneca.prior. Seneca.parent will be removed in Seneca 4.x.'</span>,
+
+  <span class="hljs-attr">seneca_next_act</span>: <span class="hljs-string">'Seneca.next_act will be removed in Seneca 3.x'</span>
+}</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

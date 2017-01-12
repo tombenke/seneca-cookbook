@@ -16,6 +16,9 @@ The diagram below demonstrates the dependencies among the internal modules of se
 
 ![Dependency map of seneca modules](seneca-dependency-map.png?raw=true)
 
+The annotated docs on the internal modules of the seneca.js:
+- [seneca.js](docs/annotated/seneca.html?raw=true)
+
 The external modules used by Seneca.js:
 
 - [Node API modules](https://nodejs.org/dist/latest-v7.x/docs/api/): [events](https://nodejs.org/api/events.html), [util](https://nodejs.org/api/util.html), [assert](https://nodejs.org/api/assert.html), [fs](https://nodejs.org/api/fs.html).
