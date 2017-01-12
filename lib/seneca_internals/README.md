@@ -19,7 +19,7 @@ The diagram below demonstrates the dependencies among the internal modules of se
 The annotated docs on the internal modules of the seneca.js:
 - [seneca.js](https://htmlpreview.github.io/?https://github.com/tombenke/seneca-cookbook/tree/master/lib/seneca_internals/docs/annotated/seneca.html)
 - [actions.html](docs/annotated/actions.html)
-- [common.html]()
+- [common.html](https://htmlpreview.github.io/?https://github.com/tombenke/seneca-cookbook/blob/master/lib/seneca_internals/docs/annotated/common.html)
 - [docco.css]()
 - [errors.html]()
 - [legacy.html]()
