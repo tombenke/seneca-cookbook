@@ -17,15 +17,15 @@ The diagram below demonstrates the dependencies among the internal modules of se
 ![Dependency map of seneca modules](seneca-dependency-map.png?raw=true)
 
 The annotated docs on the internal modules of the seneca.js:
-- [seneca.js](https://htmlpreview.github.io/?https://github.com/tombenke/seneca-cookbook/blob/master/lib/seneca_internals/docs/annotated/seneca.js)
-- [actions.html](https://htmlpreview.github.io/?https://github.com/tombenke/seneca-cookbook/blob/master/lib/seneca_internals/docs/annotated/actions.html)
-- [common.html](https://htmlpreview.github.io/?https://github.com/tombenke/seneca-cookbook/blob/master/lib/seneca_internals/docs/annotated/common.html)
-- [errors.html](https://htmlpreview.github.io/?https://github.com/tombenke/seneca-cookbook/blob/master/lib/seneca_internals/docs/annotated/errors.html)
-- [legacy.html](https://htmlpreview.github.io/?https://github.com/tombenke/seneca-cookbook/blob/master/lib/seneca_internals/docs/annotated/legacy.html)
-- [logging.html](https://htmlpreview.github.io/?https://github.com/tombenke/seneca-cookbook/blob/master/lib/seneca_internals/docs/annotated/logging.html)
-- [optioner.html](https://htmlpreview.github.io/?https://github.com/tombenke/seneca-cookbook/blob/master/lib/seneca_internals/docs/annotated/optioner.html)
-- [plugins.html](https://htmlpreview.github.io/?https://github.com/tombenke/seneca-cookbook/blob/master/lib/seneca_internals/docs/annotated/plugins.html)
-- [print.html](https://htmlpreview.github.io/?https://github.com/tombenke/seneca-cookbook/blob/master/lib/seneca_internals/docs/annotated/print.html)
+- [seneca.js](https://htmlpreview.github.io/?https://github.com/tombenke/seneca-cookbook/blob/master/lib/seneca_internals/docs/annotated/seneca.html)
+- [lib/actions.js](https://htmlpreview.github.io/?https://github.com/tombenke/seneca-cookbook/blob/master/lib/seneca_internals/docs/annotated/actions.html)
+- [lib/common.js](https://htmlpreview.github.io/?https://github.com/tombenke/seneca-cookbook/blob/master/lib/seneca_internals/docs/annotated/common.html)
+- [lib/errors.js](https://htmlpreview.github.io/?https://github.com/tombenke/seneca-cookbook/blob/master/lib/seneca_internals/docs/annotated/errors.html)
+- [lib/legacy.js](https://htmlpreview.github.io/?https://github.com/tombenke/seneca-cookbook/blob/master/lib/seneca_internals/docs/annotated/legacy.html)
+- [lib/logging.js](https://htmlpreview.github.io/?https://github.com/tombenke/seneca-cookbook/blob/master/lib/seneca_internals/docs/annotated/logging.html)
+- [lib/optioner.js](https://htmlpreview.github.io/?https://github.com/tombenke/seneca-cookbook/blob/master/lib/seneca_internals/docs/annotated/optioner.html)
+- [lib/plugins.js](https://htmlpreview.github.io/?https://github.com/tombenke/seneca-cookbook/blob/master/lib/seneca_internals/docs/annotated/plugins.html)
+- [lib/print.js](https://htmlpreview.github.io/?https://github.com/tombenke/seneca-cookbook/blob/master/lib/seneca_internals/docs/annotated/print.html)
 
 The external modules used by Seneca.js:
 
