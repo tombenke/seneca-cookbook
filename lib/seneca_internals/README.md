@@ -14,7 +14,7 @@ Seneca Internals
 
 The diagram below demonstrates the dependencies among the internal modules of seneca as well as their external dependencies:
 
-![Dependency map of seneca modules](seneca-dependency-map.png)
+![Dependency map of seneca modules](seneca-dependency-map.png?raw=true)
 
 The external modules used by Seneca.js:
 
