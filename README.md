@@ -64,7 +64,7 @@ Run tests:
 - Error handling ([docs/examples/error-handling.js](lib/seneca_internals/docs/examples/error-handling.js))
 - Writing plugins:
     - Archetypes,
-    - Control plugin load order ([docs/examples/load-order.js](seneca_internals/docs/examples/load-order.js)),
+    - Control plugin load order ([docs/examples/load-order.js](lib/seneca_internals/docs/examples/load-order.js)),
     - [How to Write a Seneca Plugin](http://senecajs.org/docs/tutorials/how-to-write-a-plugin.html).
 
 ## References
