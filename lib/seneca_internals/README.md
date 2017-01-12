@@ -3,11 +3,11 @@ Seneca Internals
 
 ## Investigate and document:
 
-- How are Seneca external and internal modules are organized, and how do they work?
+- How are Seneca external and internal modules organized, and how do they work?
 - How are plugins managed?
 - How does routing work?
 - What are the decorators, and how to use them?
-  (see: print.js/print_tree(), seneca.list(), ...)
+  (see: print.js/print_tree(), seneca.list(), [docs/examples/decoration.js](docs/examples/decoration.js), etc...)
 
 
 ## Modules and dependencies
@@ -17,15 +17,24 @@ The diagram below demonstrates the dependencies among the internal modules of se
 ![Dependency map of seneca modules](seneca-dependency-map.png?raw=true)
 
 The annotated docs on the internal modules of the seneca.js:
-- [seneca.js](https://htmlpreview.github.io/?https://github.com/tombenke/seneca-cookbook/blob/master/lib/seneca_internals/docs/annotated/seneca.html)
-- [lib/actions.js](https://htmlpreview.github.io/?https://github.com/tombenke/seneca-cookbook/blob/master/lib/seneca_internals/docs/annotated/actions.html)
-- [lib/common.js](https://htmlpreview.github.io/?https://github.com/tombenke/seneca-cookbook/blob/master/lib/seneca_internals/docs/annotated/common.html)
-- [lib/errors.js](https://htmlpreview.github.io/?https://github.com/tombenke/seneca-cookbook/blob/master/lib/seneca_internals/docs/annotated/errors.html)
+- [seneca.js](https://htmlpreview.github.io/?https://github.com/tombenke/seneca-cookbook/blob/master/lib/seneca_internals/docs/annotated/seneca.html):
+  The seneca main module.
+- [lib/actions.js](https://htmlpreview.github.io/?https://github.com/tombenke/seneca-cookbook/blob/master/lib/seneca_internals/docs/annotated/actions.html):
+  TBD.
+- [lib/common.js](https://htmlpreview.github.io/?https://github.com/tombenke/seneca-cookbook/blob/master/lib/seneca_internals/docs/annotated/common.html):
+  TBD.
+- [lib/errors.js](https://htmlpreview.github.io/?https://github.com/tombenke/seneca-cookbook/blob/master/lib/seneca_internals/docs/annotated/errors.html):
+  Error messages in the form of template strings.
 - [lib/legacy.js](https://htmlpreview.github.io/?https://github.com/tombenke/seneca-cookbook/blob/master/lib/seneca_internals/docs/annotated/legacy.html)
+  TBD.
 - [lib/logging.js](https://htmlpreview.github.io/?https://github.com/tombenke/seneca-cookbook/blob/master/lib/seneca_internals/docs/annotated/logging.html)
+  TBD.
 - [lib/optioner.js](https://htmlpreview.github.io/?https://github.com/tombenke/seneca-cookbook/blob/master/lib/seneca_internals/docs/annotated/optioner.html)
+  TBD.
 - [lib/plugins.js](https://htmlpreview.github.io/?https://github.com/tombenke/seneca-cookbook/blob/master/lib/seneca_internals/docs/annotated/plugins.html)
+  TBD.
 - [lib/print.js](https://htmlpreview.github.io/?https://github.com/tombenke/seneca-cookbook/blob/master/lib/seneca_internals/docs/annotated/print.html)
+  TBD.
 
 The external modules used by Seneca.js:
 
@@ -47,3 +56,7 @@ The external modules used by Seneca.js:
 - [seneca-log-filter](https://github.com/senecajs/seneca-log-filter): Seneca log filtering module.
 - [semver](https://github.com/npm/node-semver): The semantic version parser used by npm. (referred only from package.json).
 - [use-plugin](https://github.com/rjrodger/use-plugin): Generic plugin loader functionality for Node.js frameworks.
+
+## Message Transport
+
+See also: [docs/msg-transport-protocol](docs/msg-transport-protocol.md)

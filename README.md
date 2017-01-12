@@ -61,11 +61,15 @@ Run tests:
 - Write experimental code for the fundamental communication patterns (sync/async, observer/consumer).
 - How can I activate the `seneca.print.tree` directly from code?
 - Write basic samples on how to use entities.
+- Error handling ([docs/examples/error-handling.js](lib/seneca_internals/docs/examples/error-handling.js))
+- Writing plugins:
+    - Archetypes,
+    - Control plugin load order ([docs/examples/load-order.js](seneca_internals/docs/examples/load-order.js)),
+    - [How to Write a Seneca Plugin](http://senecajs.org/docs/tutorials/how-to-write-a-plugin.html).
 
 ## References
 
 - [Seneca.js](http://senecajs.org/)
-- [How to Write a Seneca Plugin](http://senecajs.org/docs/tutorials/how-to-write-a-plugin.html)
 
 ---
 

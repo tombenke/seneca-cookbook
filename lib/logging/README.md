@@ -249,3 +249,7 @@ Convenience shortcut log levels:
 - `test`: represents the `error+` level
 
 The default logging level is `info+`.
+
+## Implement custom logger
+
+see: [docs/examples/custom-logger.js](../seneca_internals/docs/examples/custom-logger.js)
