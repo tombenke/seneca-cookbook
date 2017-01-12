@@ -38,7 +38,7 @@ Run tests:
 - How to do testing and debugging?
     - unit test patterns, and support features,
     - debug configs and their usage.
-    - Actions and patterns (seneca.list()?)
+    - Actions and patterns (seneca.list({...})?)
 - How to write log status at periodic intervals? (see: `options.status.interval`)
 - How can I (semi-)automatically verify the execution of a whole business scenario (semantic monitoring, dead letters, etc.)?
   Implement a logger plugin/post processor for it.

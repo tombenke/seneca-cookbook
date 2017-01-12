@@ -6,7 +6,7 @@ This section is about:
 - What are the built-in, default options?
 - How can I use the `seneca.options.js` to define options?
 - How can I define options through the environment?
-- How are the default, global options defined?
+- How are the default and custom options defined?
 
 
 ## The configuration parameters of the seneca instance
@@ -107,10 +107,6 @@ The options can be defined via the following ways
 
 ### Load options from default file
 
-TODO: Investigate what is the difference between default and custom config files?
-
-### Load options from custom file
-
 Seneca options can be loaded from configuration file named `seneca.options.js` that is placed in the current folder.
 This file should be a Node.js module that exports a JSON object.
 
@@ -127,6 +123,26 @@ you can use the $suffix convention to specify options particular to a given tagg
 TODO:
 - Clarify how the plugin config really works!
 - What is the purpose of `options.plugins` object? (Register plugins specified in options?)
+
+### Load options from custom file
+
+You can define the custom options in a JavaScript file and you can give an arbitrary name to it.
+This custom options file can be loaded via the `--seneca.options.from=<custom-options-file-name>` argument.
+
+For example this is the content of the [`custom.options.js`](custom.options.js) file, which is placed beside the seneca application:
+
+```js
+    module.exports = {
+        tag: 'tag-from-custom.options.js',
+        additional: "additional parameter"
+    }
+```
+
+You can load it with the following command which will overwrite the default options:
+
+```shell
+    node app_with_options.js --seneca.options.from=custom.options.js
+```
 
 ## Load options in source code
 
