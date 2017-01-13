@@ -12,9 +12,12 @@ Seneca Internals
 
 ## Modules and dependencies
 
-The diagram below demonstrates the dependencies among the internal modules of seneca as well as their external dependencies:
+The diagram below demonstrates the simplyfied dependencies among the internal modules of seneca as well as their external dependencies:
 
-![Dependency map of seneca modules](seneca-dependency-map.png?raw=true)
+![Dependency map of seneca modules](seneca-dependency-map-simple.png?raw=true)
+
+You can see also the [full picture of dependencies](seneca-dependency-map.png),
+and [a slightly simplified version of the full picture](seneca-dependency-map-multi.png) as well. 
 
 The annotated docs on the internal modules of the seneca.js:
 - [seneca.js](https://htmlpreview.github.io/?https://github.com/tombenke/seneca-cookbook/blob/master/lib/seneca_internals/docs/annotated/seneca.html):
