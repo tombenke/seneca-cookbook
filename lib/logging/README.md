@@ -85,6 +85,8 @@ The [`log_levels.js`](./log_levels.js) example writes out messages at several le
 
 ## Filtering log
 
+### Filter log with command line arguments and seneca options
+
 The previous [`log_levels.js`](./log_levels.js) example writes out messages at several levels,
 and it has no internal options defined for the seneca instance.
 By default it displays the default level, that is 'info+':
@@ -178,6 +180,7 @@ The following two code fragments provide the same output:
     })
 ```
 
+
 During logging, the entries handed over to the `seneca.log` function produces an array,
 that is formatted for display or storage by a handler function.
 
@@ -186,6 +189,84 @@ that you can also provide (see also: [Implement custom logger](#implement-custom
 
 To minimize impact on performance, log data is only evaluated if a matching log filter is active.
 
+### Test mode logging
+
+By default seneca displays the log entries in JSON format.
+You can make it more readable with the `test` property of seneca options, that you can set `true` either
+with the `options` or through the CLI argument.
+
+The following two examples both switch to test mode:
+
+```JavaScript
+const seneca = require('seneca')({
+    test: true,
+    log: {
+        level: 'info+'
+    }
+})
+```
+
+```sh
+    node log_levels.js --seneca.log.info+ --seneca.options.test=true
+    46:
+        { kind: 'notice',
+          notice: 'hello seneca xkvujehcnuvg/1484506223263/5046/3.2.2/-',
+          level: 'info',
+          seneca: undefined,
+          when: 1484506223309 }
+    ------------------------------------------------
+
+
+    279:
+        [ 'fatal log level',
+          level: 'fatal',
+          seneca: undefined,
+          when: 1484506223542 ]
+    ------------------------------------------------
+
+
+    280:
+        [ 'error log level',
+          level: 'error',
+          seneca: undefined,
+          when: 1484506223543 ]
+    ------------------------------------------------
+
+
+    280:
+        [ 'warn log level',
+          level: 'warn',
+          seneca: undefined,
+          when: 1484506223543 ]
+    ------------------------------------------------
+
+
+    281:
+        [ 'info log level',
+          level: 'info',
+          seneca: undefined,
+          when: 1484506223544 ]
+    ------------------------------------------------
+
+
+    281:
+        { comment: 'This log entry holds some details',
+          myDetails: 'Some specific details',
+          level: 'info',
+          seneca: undefined,
+          when: 1484506223544 }
+    ------------------------------------------------
+
+
+    281:
+        [ 'info level',
+          { comment: 'This log entry returns with an array, that also holds some details',
+            myDetails: 'Some other details' },
+          level: 'info',
+          seneca: undefined,
+          when: 1484506223544 ]
+    ------------------------------------------------
+```
 
 ## The log format
 
