@@ -42,11 +42,11 @@ The annotated docs on the internal modules of the seneca.js:
 The external modules used by Seneca.js:
 
 
-- [Node API modules](https://nodejs.org/dist/latest-v7.x/docs/api/): [events](https://nodejs.org/api/events.html), [util](https://nodejs.org/api/util.html), [assert](https://nodejs.org/api/assert.html), [fs](https://nodejs.org/api/fs.html).
+- [Node API](https://nodejs.org/dist/latest-v7.x/docs/api/) modules: [events](https://nodejs.org/api/events.html), [util](https://nodejs.org/api/util.html), [assert](https://nodejs.org/api/assert.html), [fs](https://nodejs.org/api/fs.html).
 - [archy](https://github.com/substack/node-archy): render nested hierarchies `npm ls` style with unicode pipes.
 - [eraro](https://github.com/rjrodger/eraro): Create JavaScript Error objects with code strings, context details, and templated messages.
 - [gate-executor](https://github.com/rjrodger/gate-executor): A work queue that can be gated, stopping to wait for sub-queues to complete.
-- [gex](https://github.com/rjrodger/gex):Glob expressions for JavaScript (referred only from package.json).
+- [gex](https://github.com/rjrodger/gex): Glob expressions for JavaScript (referred only from package.json).
 - [json-strigify-safe](https://github.com/e-conomic/safe-json-stringify): Prevent defined property getters from throwing errors.
 - [jsonic](https://github.com/rjrodger/jsonic): A JSON parser that isn't strict.
 - [lodash](https://github.com/lodash/lodash): Lodash modular utilities.

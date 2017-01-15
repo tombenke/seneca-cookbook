@@ -51,6 +51,8 @@ The options can be defined via the following ways
           callpoint: false,  // Record and log callpoints (calling code locations).
           deprecation: true  // Log deprecation warnings
         },
+        log: {},             // Defines either shortcuts to filter log, or detailed description of
+                             // levels and log handler mapping (see details in section about logging)
 
         strict: {           // Enforce strict behaviours. Relax when backwards compatibility needed.
           result: true,     // Action result must be a plain object.
