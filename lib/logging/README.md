@@ -18,9 +18,10 @@ The default logging level is `info+`.
 
 Some shortcuts are also defined for the most frequently used combinations:
 
-- `silent`=> `none`
-- `all`=> `debug+`
-- `test` => `error+`
+- `quiet`, `silent`=> `none`
+- `any`, `all`, `print` => `debug+`
+- `test` => `warn+`
+- `standard` => `info+`
 
 The diagram below visualizes the levels and their shortcuts:
 
@@ -30,18 +31,18 @@ The diagram below visualizes the levels and their shortcuts:
        seneca.options: {log: {level:<level>}}     seneca.options: {log: <shortcut>}
       
     +----------------------------------------+ +-----------------------------------+
-    |                 none                   | |            silent                 |
-    +========================================+ +===============+===================+
-    |                 fatal                  | |               |                   |
-    +----------------------------------------+ |               |                   |
-    |                 error                  | |               |                   |
-    +----------------------------------------+ |     test,     |                   |
-    |                 warn                   | |     warn+     |                   |
-    +----------------------------------------+ +---------------+                   |
-    |                 info                   |                 |                   |
-    +----------------------------------------+                 |       all,        |
-    |                 debug                  |                 |       debug+      |
-    +----------------------------------------+                 +-------------------+
+    |                 none                   | |          quiet, silent            |
+    +========================================+ +========+==========+===============+
+    |                 fatal                  | |        |          |               |
+    +----------------------------------------+ |        |          |               |
+    |                 error                  | |        |          |               |
+    +----------------------------------------+ |  test, |          |               |
+    |                 warn                   | |(=warn+)|          |               |
+    +----------------------------------------+ +--------+ standard |     any       |
+    |                 info                   |          | (=info+) |     all,      |
+    +----------------------------------------+          +----------+     print,    |
+    |                 debug                  |                     |   (=debug+)   |
+    +----------------------------------------+                     +---------------+
 
 ### Writing log messages
     
@@ -166,7 +167,7 @@ The following two code fragments provide the same output:
 
 ```JavaScript
     const seneca = require('seneca')({
-        // 'silent' | 'test' | 'all'
+        // `quiet`, 'silent' | 'any' | 'all' | 'print' | 'standard' | 'test'
         log: 'test'
     })
 ```
@@ -174,6 +175,9 @@ The following two code fragments provide the same output:
 ```JavaScript
     const seneca = require('seneca')({
         log: {
+            // `quiet`, 'silent' | 'any' | 'all' | 'print' | 'standard' | 'test'
+            // basic: 'test'
+        
             // 'fatal' | 'error' | 'error+' | 'warn' | 'warn+' | 'info' | 'info+', 'debug', 'debug+'
             level: 'warn+'
         }
@@ -272,7 +276,37 @@ const seneca = require('seneca')({
 
 Seneca creates its log entries as JavaScript objects.
 
-A full log entry:
+### The standard ACT log entry
+
+```js
+_.extend({
+    actid: callmeta.id,
+    msg: msg,
+    entry: prior.entry,
+    prior: prior.chain,
+    gate: origmsg.gate$,
+    caller: origmsg.caller$,
+    meta: actmeta,
+
+    // these are transitional as need to be updated
+    // to standard transport metadata
+    client: actmeta.client,
+    listen: !!transport.origin,
+    transport: transport
+  }, ctxt)
+```
+
+### The standard error log entry
+
+```js
+_.extend({
+    notice: err.message,
+    code: err.code,
+    err: err
+  }, ctxt)
+```
+
+### A full log entry:
 
 ```JavaScript
 {
