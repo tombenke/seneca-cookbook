@@ -11,7 +11,7 @@ Seneca Internals
 
 ## Domain Model
 
-The following image shows the domain model of the seneca framework:
+The following image shows the simplified domain model of an application that is using seneca instances:
 
 ![Domain Model](seneca-domain-model.png?raw=true)
 
