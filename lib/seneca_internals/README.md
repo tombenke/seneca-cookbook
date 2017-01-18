@@ -9,6 +9,12 @@ Seneca Internals
 - What are the decorators, and how to use them?
   (see: print.js/print_tree(), seneca.list(), [docs/examples/decoration.js](docs/examples/decoration.js), etc...)
 
+## Domain Model
+
+The following image shows the domain model of the seneca framework:
+
+![Domain Model](seneca-domain-model.png?raw=true)
+
 
 ## Modules and dependencies
 
@@ -55,7 +61,11 @@ The external modules used by Seneca.js:
 - [nid](https://github.com/rjrodger/nid): Nice clean-mouthed random id generation, without any swearing!
 - [norma](https://github.com/rjrodger/norma): A function argument organizer.
 - [ordu](https://github.com/rjrodger/ordu): Execute functions in a configurable order, modifying a shared data structure.
+  Task functions are executed in order of addition, and passed a shared context, and a modifiable data structure. Execution is synchronous. You can exit early by returning a non-null value from a task function.
+  You can tag task functions, and restrict execution to the subset of task functions with matching tags.
+  It is used to provide configurable extension hooks for Seneca.
 - [patrun](https://github.com/rjrodger/patrun): A fast pattern matcher on JavaScript object properties.
+  It's basically query-by-example for property sets, that picks out an object based on a subset of its properties.
 - [rolling-stats](https://github.com/rjrodger/rolling-stats): Rolling statistics.
 - [seneca-log-filter](https://github.com/senecajs/seneca-log-filter): Seneca log filtering module.
 - [semver](https://github.com/npm/node-semver): The semantic version parser used by npm. (referred only from package.json).
