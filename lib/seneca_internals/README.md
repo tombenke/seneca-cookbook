@@ -29,15 +29,16 @@ The annotated docs on the internal modules of the seneca.js:
 - [seneca.js](https://htmlpreview.github.io/?https://github.com/tombenke/seneca-cookbook/blob/master/lib/seneca_internals/docs/annotated/seneca.html):
   The seneca main module.
 - [lib/actions.js](https://htmlpreview.github.io/?https://github.com/tombenke/seneca-cookbook/blob/master/lib/seneca_internals/docs/annotated/actions.html):
-  TBD.
+  Provides the functions that pre- and postprocesses the message before and after the execution of the action.
+  These functions form inward, and outward pipelines using the [`ordu`](https://github.com/rjrodger/ordu) module.
 - [lib/common.js](https://htmlpreview.github.io/?https://github.com/tombenke/seneca-cookbook/blob/master/lib/seneca_internals/docs/annotated/common.html):
-  TBD.
+  Basic utility functions commonly used by the seneca framework.
 - [lib/errors.js](https://htmlpreview.github.io/?https://github.com/tombenke/seneca-cookbook/blob/master/lib/seneca_internals/docs/annotated/errors.html):
   Error messages in the form of template strings.
 - [lib/legacy.js](https://htmlpreview.github.io/?https://github.com/tombenke/seneca-cookbook/blob/master/lib/seneca_internals/docs/annotated/legacy.html)
   TBD.
 - [lib/logging.js](https://htmlpreview.github.io/?https://github.com/tombenke/seneca-cookbook/blob/master/lib/seneca_internals/docs/annotated/logging.html)
-  TBD.
+  Provides the logging fonctionality.
 - [lib/optioner.js](https://htmlpreview.github.io/?https://github.com/tombenke/seneca-cookbook/blob/master/lib/seneca_internals/docs/annotated/optioner.html)
   Managing the seneca options for the core modul, including the loading from several sources and overriding in the predefined order.
 - [lib/plugins.js](https://htmlpreview.github.io/?https://github.com/tombenke/seneca-cookbook/blob/master/lib/seneca_internals/docs/annotated/plugins.html)
